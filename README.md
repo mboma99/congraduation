@@ -5,6 +5,7 @@ application uses the following technologies
 - PostgreSQL - links to where images are stored in S3
 - FastAPI
 - React.js
+- Docker 
 
 
 
