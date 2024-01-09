@@ -1,3 +1,11 @@
 fastapi
 uvicorn
 pytest
+SQLAlchemy
+sqlmodel
+asyncpg
+alembic
+jose
+passlib
+python-jose[cryptography]
+passlib[bcrypt]
