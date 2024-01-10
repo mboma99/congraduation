@@ -12,8 +12,6 @@ class Person(SQLModel, TimeMixin, table=True):
     id: Optional[str] = Field(None, primary_key=True, nullable=False)
     first_name: str
     last_name: str
-    dob: date
-    profile: str
     phone_number: str
 
     customers: Optional["Customers"] = Relationship(

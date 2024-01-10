@@ -8,16 +8,14 @@ from backend.app.service.schema import CustomerProfileResponse
 class CustomerService:
 
     @staticmethod
-    async def get_customer_profile(username: str):
+    async def get_customer_profile(email: str):
         query = select(
-            Customers.username,
             Customers.email,
             Person.first_name,
             Person.last_name,
-            Person.dob,
-            Person.profile,
-            Person.phone_number
-        ).join_from(Customers, Person).where(Customers.username == username)
+            Customers.university_id,
+            Person.phone_number,
+        ).join_from(Customers, Person).where(Customers.email == email)
 
         result = await db.execute(query)
         customer_data = result.mappings().one()
