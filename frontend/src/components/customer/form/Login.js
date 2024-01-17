@@ -16,7 +16,8 @@ export default function Login(props) {
   const [loginFailed, setLoginFailed] = useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = useState('');
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // New state for password visibility
+  const [showPassword, setShowPassword] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
 
   const onChangeForm = (label, event) => {
     switch (label) {
@@ -28,6 +29,12 @@ export default function Login(props) {
         break;
     }
   };
+  
+  const handleLogin = async () => {
+    setIsLoading(true);
+    // your login code here
+    setIsLoading(false);
+};
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -35,6 +42,7 @@ export default function Login(props) {
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();
+    console.log(loginForm)
 
     // Email validation: Check if email is null
     if (loginForm.email === '') {
@@ -62,36 +70,41 @@ export default function Login(props) {
     } else {
       setPasswordErrorMessage('');
     }
-
-    try {
-      const response = await axios.post('http://localhost:8000/auth/login', loginForm);
-      console.log(response);
-
-      // Check the login result and update loginFailed accordingly
-      if (response.data.success) {
-        setLoginFailed(false);
-        // get authentication tokens
-        localStorage.setItem('auth_token_type', response.data.result.token_type);
-        localStorage.setItem('auth_token', response.data.result.access_token);
-
-        // reload page after success
+    // call api login
+    await axios
+      .post("http://localhost:8000/auth/login", loginForm)
+      .then((response) => {
+        console.log(response);
+        // Save token to local storage
+        localStorage.setItem("auth_token", response.data.result.access_token);
+        localStorage.setItem(
+          "auth_token_type",
+          response.data.result.token_type
+        );
+        // reload page after success login
+        setIsLoading(true);
         setTimeout(() => {
           window.location.reload();
         }, 1000);
-      } else {
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        // add error notif
+        
+        console.log(error);
         setLoginFailed(true);
-      }
-    } catch (error) {
-      console.log(error);
-      setLoginFailed(true);
-    }
+      });
+
+    
   };
+
+
 
   return (
     <React.Fragment>
       <BackgroundActions />
       <FocusedNavbar />
-      <div className=" flex justify-center min-h-screen items-center relative">
+      <div className="flex justify-center min-h-screen items-start relative pt-20">
         <div className="w-80 ">
           <div>
             <h1 className="font-regular uppercase text-xl text-white text-center mb-10">

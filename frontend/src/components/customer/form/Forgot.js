@@ -15,7 +15,7 @@ export default function Forgot(props) {
 
     const handleResetPassword = () => {
         if (isResetButtonEnabled) {
-            // Add your password reset logic here
+
         }
     };
 
@@ -23,7 +23,7 @@ export default function Forgot(props) {
         <React.Fragment>
             <BackgroundActions />
             <FocusedNavbar />
-            <div className="-top-40 flex justify-center min-h-screen items-center relative">
+            <div className="flex justify-center min-h-screen items-start relative pt-20">
                 <div className='w-80'>
                     <div>
                         <h1 className="font-regular uppercase text-xl  text-white text-center  mb-10">
