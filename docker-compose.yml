@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  # FastAPI Application Service
+  fastapi-app:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile  # Path to FastAPI Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres-db
+    environment:
+      DATABASE_URL: "postgresql+asyncpg://james:P2521444@postgres-db:5432/congraduation"  # Use the service name as the host
+
+  # PostgreSQL Database Service
+  postgres-db:
+    image: postgres:16.1-alpine
+    container_name: database
+    restart: always
+    user: postgres
+    environment:
+      POSTGRES_DB: congraduation
+      POSTGRES_PASSWORD: P2521444
+    ports:
+      - "5432:5432"
+    volumes:
+      - ~/apps/postgres:/var/lib/postgresql/data
+
+networks:
+  default:
+    driver: bridge

@@ -1,9 +1,12 @@
 import uvicorn
 from fastapi import FastAPI, APIRouter
+from fastapi.middleware.cors import CORSMiddleware
 from backend.app.config import db
 
-#app = FastAPI()
-#router = APIRouter()
+
+origins= [
+    "http://localhost:3000"
+]
 
 def init_app():
     db.init()
@@ -12,6 +15,13 @@ def init_app():
         title="Congraduation",
         description="Login Page",
         version="1"
+    )
+    temp_app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"]
     )
 
     router = APIRouter()
