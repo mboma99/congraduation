@@ -1,18 +1,41 @@
-import logo from './logo.svg';
 import './App.css';
-import Login from './form/Login';
-import Register from './form/Register';
-import RegisterInfo from './form/RegisterInfo';
+import React, { useState } from 'react';
+import Login from './components/customer/form/Login';
+import Register from './components/customer/form/Register';
+import Forgot from './components/customer/form/Forgot';
+import RegisterInfo from './components/customer/form/RegisterInfo';
+import Footer from './components/navigation/Footer';
 
 function App() {
+
+  const [page, setPage] = useState("login")
+
+  const selectedPage = () => {
+    if (page === "login") {
+      return <Login setPage={setPage} />
+    }
+    if (page === "register") {
+      return <Register setPage={setPage} />
+    }
+    if (page === "registerinfo") {
+      return <RegisterInfo setPage={setPage} />
+    }
+    if (page === "forgot") {
+      return <Forgot setPage={setPage} />
+    }
+  }
   return (
-    <div className="min-h-screen bg-customIndigo flex justify-center items-center font-outfit">
-      <div className='py-1 px-1 z-20 w-80'>
-        <RegisterInfo/>
+    <div className="relative overflow-hidden bg-[#1B223C] font-outfit">
+    <div className="flex flex-col max-w-screen-xl mx-auto relative z-10">
+      <div className='flex-grow'>
+        {selectedPage()}
+        
       </div>
-    
+      <Footer />
     </div>
+  </div>  
   );
+
 }
 
 export default App;

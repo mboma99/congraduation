@@ -1,23 +1,49 @@
+# syntax=docker/dockerfile:1
 
-# Use the official Python image from the Docker Hub
-FROM python:3.7.9
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Dockerfile reference guide at
+# https://docs.docker.com/go/dockerfile-reference/
 
-# Set the working directory within the container
-WORKDIR /congraduation
+ARG PYTHON_VERSION=3.9.6
+FROM python:${PYTHON_VERSION}-slim as base
 
-# Copy the requirements file to the working directory
-COPY ./requirements.txt /congraduation/backend/requirements.txt
+# Prevents Python from writing pyc files.
+ENV PYTHONDONTWRITEBYTECODE=1
 
-# Install dependencies from the requirements file
-RUN pip install --no-cache-dir --upgrade -r /congraduation/backend/requirements.txt
+# Keeps Python from buffering stdout and stderr to avoid situations where
+# the application crashes without emitting any logs due to buffering.
+ENV PYTHONUNBUFFERED=1
 
-# Copy the entire project to the working directory
-COPY . /congraduation/backend
+WORKDIR /app
 
-# Expose port 80 for the application
-EXPOSE 80
+# Create a non-privileged user that the app will run under.
+# See https://docs.docker.com/go/dockerfile-user-best-practices/
+ARG UID=10001
+RUN adduser \
+    --disabled-password \
+    --gecos "" \
+    --home "/nonexistent" \
+    --shell "/sbin/nologin" \
+    --no-create-home \
+    --uid "${UID}" \
+    appuser
 
-# Set the command to run on container start
-CMD ["uvicorn", "backend.app.main:app", "--reload", "--host", "0.0.0.0", "--port", "80"]
+# Download dependencies as a separate step to take advantage of Docker's caching.
+# Leverage a cache mount to /root/.cache/pip to speed up subsequent builds.
+# Leverage a bind mount to requirements.txt to avoid having to copy them into
+# into this layer.
+RUN --mount=type=cache,target=/root/.cache/pip \
+    --mount=type=bind,source=requirements.txt,target=requirements.txt \
+    python -m pip install -r requirements.txt
 
+# Switch to the non-privileged user to run the application.
+USER appuser
 
+# Copy the source code into the container.
+COPY . .
+
+# Expose the port that the application listens on.
+EXPOSE 8000
+
+# Run the application.
+CMD uvicorn 'backend.app.main:app' --host=0.0.0.0 --port=8000
