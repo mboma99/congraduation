@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import FocusedNavbar from '../components/navigation/FocusedNavbar';
 import BackgroundActions from '../components/backgrounds/BackgroundActions';
 import { LockClosedIcon, LockOpenIcon } from '@heroicons/react/24/outline';
@@ -10,6 +10,7 @@ export const Login = () => {
     email: '',
     password: '',
   });
+  const navigate = useNavigate();
 
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
@@ -75,9 +76,10 @@ export const Login = () => {
 
       // Reload page after successful login
       setIsLoading(true);
+      // reload page
       setTimeout(() => {
         window.location.reload();
-      }, 1000);
+      }, 1500);
       setIsLoading(false);
     } catch (error) {
       // Handle login failure
