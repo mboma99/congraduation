@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ShoppingBagIcon, UserIcon } from '@heroicons/react/24/outline';
 import { Link, useNavigate } from 'react-router-dom';
 
 export const Navbar = () => {
   const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Function to handle the UserIcon click
   const handleUserIconClick = () => {
@@ -20,6 +21,11 @@ export const Navbar = () => {
     }
   };
 
+  // Function to toggle the mobile menu
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
     <nav>
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto pt-10 p-4">
@@ -27,11 +33,9 @@ export const Navbar = () => {
           <Link to='/'>congraduation</Link>
         </h1>
         <button
-          data-collapse-toggle="navbar-default"
           type="button"
           className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-          aria-controls="navbar-default"
-          aria-expanded="false"
+          onClick={toggleMobileMenu}
         >
           <span className="sr-only">Open main menu</span>
           <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
@@ -39,11 +43,13 @@ export const Navbar = () => {
           </svg>
         </button>
 
-        <div className="hidden w-full md:block md:w-auto" id="navbar-default">
+        <div className={`w-full md:block md:w-auto ${isMobileMenuOpen ? 'block' : 'hidden'}`} id="navbar-default">
           <ul className="flex text-base tracking-[.3em] uppercase flex-col mt-4 md:flex-row md:space-x-10 md:mt-0">
             <li>
               <p className="hover:text-gray-800 text-white">
-                <Link to='/about'>About</Link>
+                <Link to='/about' onClick={toggleMobileMenu}>
+                  About
+                </Link>
               </p>
             </li>
             <li>
@@ -52,7 +58,7 @@ export const Navbar = () => {
               </button>
             </li>
             <li>
-              <Link to='/cart' className="group -m-2 flex items-center p-2">
+              <Link to='/cart' onClick={toggleMobileMenu} className="group -m-2 flex items-center p-2">
                 <ShoppingBagIcon
                   className="h-6 w-6 flex-shrink-0 text-white group-hover:text-gray-800"
                   aria-hidden="true"

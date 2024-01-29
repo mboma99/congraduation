@@ -77,9 +77,7 @@ export const Login = () => {
       // Reload page after successful login
       setIsLoading(true);
       // reload page
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+      window.location.href = "/account";
       setIsLoading(false);
     } catch (error) {
       // Handle login failure

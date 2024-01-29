@@ -51,8 +51,12 @@ class CustomerProfileResponse(BaseModel):
     email: str
     first_name: str
     last_name: str
+    university: str
     university_id: str
     phone_number: str
+    address: str
+    postcode: str
+    city: str
 
 
 class DetailSchema(BaseModel):

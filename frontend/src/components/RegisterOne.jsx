@@ -3,23 +3,24 @@ import React, { useState }from 'react';
 import { LockClosedIcon, LockOpenIcon } from '@heroicons/react/24/outline';
 import RegisterForm from '../pages/RegisterForm';
 
-export default function Register({ formData, setFormData }) {
+export default function RegisterOne({ formData, setFormData }) {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     return (
         <React.Fragment>
-            <form>
                 <div className='space-y-6 w-full'>
                     <input
-                        type='text' placeholder='Email Address' value={formData.email}
+                        type='text' placeholder='Email Address' 
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         className='block text-sm py-3 px-4 rounded-3xl w-full border text-center outline-none focus:ring focus:outline-none '
                     /><div className='relative'>
                         <input
                             type={showPassword ? 'text' : 'password'}
                             placeholder='Password'
                             value={formData.password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                             className='block text-sm py-3 px-4 rounded-3xl w-full border text-center outline-none, focus:ring focus:outline-none ring-[#DFC9C2]'
                         />
                         <span
@@ -33,8 +34,6 @@ export default function Register({ formData, setFormData }) {
                         <input
                             type={showPassword ? 'text' : 'password'}
                             placeholder='Confirm Password'
-                            value={formData.confirm_password}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
                             className='block text-sm py-3 px-4 rounded-3xl w-full border text-center outline-none, focus:ring focus:outline-none ring-[#DFC9C2]'
                         />
                         <span
@@ -45,7 +44,6 @@ export default function Register({ formData, setFormData }) {
                         </span>
                     </div>
                 </div>
-            </form>
         </React.Fragment>
     )
 }
