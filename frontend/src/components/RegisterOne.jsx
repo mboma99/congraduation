@@ -1,7 +1,6 @@
 import React, { useState }from 'react';
 
 import { LockClosedIcon, LockOpenIcon } from '@heroicons/react/24/outline';
-import RegisterForm from '../pages/RegisterForm';
 
 export default function RegisterOne({ formData, setFormData }) {
     const [password, setPassword] = useState('');
