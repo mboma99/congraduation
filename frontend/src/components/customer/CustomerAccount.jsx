@@ -31,10 +31,7 @@ export const CustomerAccount = () => {
     localStorage.removeItem("auth_token");
     localStorage.removeItem("auth_token_type");
 
-    // reload page
-    setTimeout(() => {
-      window.location.reload();
-    }, 1500);
+    window.location.href = "/login";
   };
 
   return (
@@ -46,9 +43,9 @@ export const CustomerAccount = () => {
           <div className=''> name: {user.first_name} {user.last_name}</div>
           <div className=''> email: {user.email} </div>
           <div className=''> phone: {user.phone_number} </div>
-          <div className=''> address: </div>
-          <div className=''> city: </div>
-          <div className=''> Univeristy: </div>
+          <div className=''> address: {user.address} </div>
+          <div className=''> city: {user.city} </div>
+          <div className=''> Univeristy: {user.university} </div>
           <button
             onClick={(event) => {
               onClickHandler(event);

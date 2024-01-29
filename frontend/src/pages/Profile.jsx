@@ -34,7 +34,6 @@ export default function Proile(props) {
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();
-    // ... (rest of the code remains unchanged)
   };
 
   return (

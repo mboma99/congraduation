@@ -18,3 +18,9 @@ class UniversityRepository(BaseRepo):
         result = await db.execute(query)
         university_id = result.scalar_one_or_none()
         return university_id
+    
+    @staticmethod 
+    async def find_by_univeristy_id(university_id: str):
+        query = select(Universities).where(Universities.id == university_id)
+        university = (await db.execute(query)).scalars_one_or_none()
+        return university
