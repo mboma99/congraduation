@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Logout from './Logout';
 
 export const CustomerAccount = () => {
   const [user, setUser] = useState({});
@@ -24,41 +25,79 @@ export const CustomerAccount = () => {
       });
   }, []);
 
-  const onClickHandler = (event) => {
-    event.preventDefault();
-
-    // remove token form local storage
-    localStorage.removeItem("auth_token");
-    localStorage.removeItem("auth_token_type");
-
-    window.location.href = "/login";
-  };
-
   return (
-    <div>
+    <>
+      <div className="flex ml-5 min-h-screen justify-center items-start relative text-white pt-20">
+        <div>
+          <div className='flex-row justify-evenly'>
+            <div className="flex">
+              <div className="items-center w-80 text-center flex-row justify-center  bg-[#D9D9D9] bg-opacity-40 p-10 rounded-3xl mb-10">
+                <div className='space-y-2 cursor-default'>
+                  <div className="font-semibold text-3xl">{user.first_name}</div>
+                  <div className="font-semibold text-3xl">{user.last_name}</div>
+                  <div className="font-light text-xl">{user.university}</div>
+                  <div className="font-light text-xl">{user.email}</div>
+                  <div className="font-light text-xl">{user.phone_number}</div>
+                  <div className="font-light text-xl">{user.address}</div>
+                  <div className="font-light text-xl">{user.city}</div>
+                </div>
+                <div className='mt-10 text-[#69A9D7] uppercase text-center duration-200 text-xl cursor-pointer hover:text-white'>
+                  update profile
+                </div>
+              </div>
+              <div>
+                <div className=" ml-10 items-center text-center flex-row justify-center  bg-[#D9D9D9] bg-opacity-40 p-8 rounded-3xl mb-10 h-fit">
+                  <div className='font-medium uppercase text-2xl'>Graduate photos</div>
+                  <p className='w-80 font-light'>Find photos  and other memorabilia from  your graduation</p>
+                  <div className='mt-4 text-[#69A9D7] uppercase text-center duration-200 text-xl cursor-pointer hover:text-white'>
+                    find photos
+                  </div>
+                </div>
+                <div className=" ml-10 items-center text-center flex-row justify-center  bg-[#D9D9D9] bg-opacity-40 p-8 rounded-3xl mb-10 h-fit">
+                  <div className='font-medium uppercase text-2xl'>Shipping Address</div>
+                  <p className='w-80 font-light'>Make sure your address details are up to date.</p>
+                  <div className='mt-4 text-[#69A9D7] uppercase text-center duration-200 text-xl cursor-pointer hover:text-white'>
+                    update address
+                  </div>
+                </div>
+              </div>
 
-      <div className="flex justify-center min-h-screen items-start relative  text-white pt-20">
-        <div className="w-80 ">
-          <h1 className=' text-2xl'>CustomerAccount</h1>
-          <div className=''> name: {user.first_name} {user.last_name}</div>
-          <div className=''> email: {user.email} </div>
-          <div className=''> phone: {user.phone_number} </div>
-          <div className=''> address: {user.address} </div>
-          <div className=''> city: {user.city} </div>
-          <div className=''> Univeristy: {user.university} </div>
-          <button
-            onClick={(event) => {
-              onClickHandler(event);
-            }}
-            className="duration-300 bg-[#364c78] hover:bg-customDullBlue hover:border-customDullBlue w-full py-3 rounded-3xl mb-1"
-          >
-            Log out
-          </button>
+            </div>
+            <div className="flex">
+              <div>
+                <div className="items-center text-center flex-row justify-center  bg-[#D9D9D9] bg-opacity-40 p-8 rounded-3xl mb-10 h-fit">
+                  <div className='font-medium uppercase text-2xl'>password</div>
+                  <p className='w-80 font-light'>Make your password stronger, or change it if someone else knows it.</p>
+                  <div className='mt-4 text-[#69A9D7] uppercase text-center duration-200 text-xl cursor-pointer hover:text-white'>
+                    change password
+                  </div>
+                </div>
+                <div className="items-center text-center flex-row justify-center  bg-[#D9D9D9] bg-opacity-40 p-8 rounded-3xl mb-10 h-fit">
+                  <div className='font-medium uppercase text-2xl'>order history</div>
+                  <p className='w-80 font-light'>Track orders and view previous orders.</p>
+                  <div className='mt-4 text-[#69A9D7] uppercase text-center duration-200 text-xl cursor-pointer hover:text-white'>
+                    track orders
+                  </div>
+                </div>
+              </div>
+              <div className="ml-10 w-80  text-center flex-row bg-[#D9D9D9] bg-opacity-40 p-10 rounded-3xl mb-10">
+                <div className='font-medium uppercase text-2xl'>payment info</div>
+                <p className='font-light'>keep your latest banking details. To ensure swift delivery of memories</p>
+                <div className='mt-10 text-[#69A9D7] uppercase text-center duration-200 text-xl cursor-pointer hover:text-white'>
+                  update card info
+                </div>
+              </div>
 
+            </div>
+          </div>
+          <div className='flex items-center justify-center w-full mb-10'>
+            <Logout />
+          </div>
 
         </div>
       </div>
-    </div>
+
+    </>
   );
 };
 
