@@ -25,3 +25,10 @@ class CustomerRepository(BaseRepo):
             password=password).execution_options(synchronize_session="fetch")
         await db.execute(query)
         await commit_rollback()
+        
+    @staticmethod
+    async def update_profile(email: str, new_data: dict):
+        query = sql_update(Customers).where(Customers.email == email).values(
+            **new_data).execution_options(synchronize_session="fetch")
+        await db.execute(query)
+        await commit_rollback()

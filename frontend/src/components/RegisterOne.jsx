@@ -3,8 +3,6 @@ import React, { useState }from 'react';
 import { LockClosedIcon, LockOpenIcon } from '@heroicons/react/24/outline';
 
 export default function RegisterOne({ formData, setFormData }) {
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     return (
         <React.Fragment>
