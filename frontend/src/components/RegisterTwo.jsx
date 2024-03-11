@@ -1,4 +1,7 @@
 import React from 'react';
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css'
+
 export default function RegisterTwo({ formData, setFormData }) {
     const options = [
         { value: "", label: "Select University" },

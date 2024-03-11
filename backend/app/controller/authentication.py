@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from backend.app.service.schema import ResponseSchema, RegisterSchema, LoginSchema, ForgotPasswordSchema
+from backend.app.service.schema import ResponseSchema, RegisterSchema, LoginSchema, ForgotPasswordSchema, RefreshTokenSchema
 from backend.app.service.auth_service import AuthService
 
 router = APIRouter(prefix="/auth", tags=['Authentication'])
@@ -22,3 +22,8 @@ async def login(request_body: LoginSchema):
 async def forgot_password(request_body: ForgotPasswordSchema):
     await AuthService.forgot_password_service(request_body)
     return ResponseSchema(detail="Successfully update data!")
+
+@router.post("/token_refresh", response_model=ResponseSchema, response_model_exclude_none=True)
+async def token_refresh(request_body: RefreshTokenSchema):
+    token = await AuthService.token_refresh_service(request_body)
+    return ResponseSchema(detail="Successfully refresh token", result={"token_type": "Bearer", "access_token": token})

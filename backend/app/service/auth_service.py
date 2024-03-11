@@ -6,7 +6,7 @@ from backend.app.model import Person, Customers
 from backend.app.repository.customer import CustomerRepository
 from backend.app.repository.university import UniversityRepository
 from backend.app.repository.person import PersonRepository
-from backend.app.service.schema import LoginSchema, ForgotPasswordSchema, RegisterSchema
+from backend.app.service.schema import LoginSchema, ForgotPasswordSchema, RegisterSchema, RefreshTokenSchema
 from backend.app.repository.auth_repo import JWTRepo
 
 
@@ -71,3 +71,9 @@ class AuthService:
             raise HTTPException(status_code=404, detail="Email not found !")
         await CustomerRepository.update_password(forgot_password.email, pwd_context.hash(forgot_password.new_password))
 
+    @staticmethod
+    async def token_refresh_service(refresh_token: RefreshTokenSchema):
+        _email = await CustomerRepository.find_by_email(refresh_token.email)
+        if _email is not None:
+            return JWTRepo(data={"email": _email.email}).generate_token()
+        raise HTTPException(status_code=404, detail="email not found !")

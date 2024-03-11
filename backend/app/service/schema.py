@@ -57,6 +57,21 @@ class CustomerProfileResponse(BaseModel):
     address: str
     postcode: str
     city: str
+    
+
+class CustomerProfileUpdate(BaseModel):
+    email: str
+    university: str
+    university_id: str
+    address: str
+    postcode: str
+    city: str
+    
+class PersonProfileUpdate(BaseModel):
+    first_name: str
+    last_name: str
+    phone_number: str
+    
 
 
 class DetailSchema(BaseModel):
@@ -68,3 +83,11 @@ class DetailSchema(BaseModel):
 class ResponseSchema(BaseModel):
     detail: str
     result: Optional[T] = None
+    
+class RefreshTokenSchema(BaseModel):
+    access_token: str
+    token_type: str
+    email: str
+
+
+

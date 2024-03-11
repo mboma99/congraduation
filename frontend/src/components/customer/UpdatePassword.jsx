@@ -1,88 +1,79 @@
-/**
- * ForgotPassword Component
- * A React component for handling the password recovery process.
- *
- * @component
- * @returns {JSX.Element} - Returns the JSX element for the ForgotPassword component.
- */
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { LockClosedIcon, LockOpenIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, LockClosedIcon, LockOpenIcon } from '@heroicons/react/24/outline';
 import axios from 'axios';
 
-/**
- * Functional component for handling password recovery.
- *
- * @function ForgotPassword
- * @returns {JSX.Element} - Returns the JSX element for the ForgotPassword component.
- */
-export const ForgotPassword = () => {
-    // State variables for managing form input
-    const [email, setEmail] = useState("");
+const UpdatePassword = ({ user, onClose }) => {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const auth_token = localStorage.getItem('auth_token');
+    const auth_token_type = localStorage.getItem('auth_token_type');
+    const token = auth_token_type + ' ' + auth_token;
 
-    /**
-     * Handles the submission of the password recovery form.
-     * Sends a request to the server to initiate the password recovery process.
-     * Redirects to the login page upon successful initiation.
-     *
-     * @async
-     * @function onSubmitHandler
-     */
     const onSubmitHandler = async () => {
         const data = {
-            email: email,
+            email: user.email,
             new_password: password,
         };
 
-        try {
-            const response = await axios.post("http://localhost:8000/auth/forgot-password", data);
-            
-            // Redirect to the login page upon successful initiation
-            window.location.href = "/login";
-        } catch (error) {
-            console.error(error);
-        }
+        axios
+            .post("http://localhost:8000/auth/forgot-password", data)
+            .then((response) => {
+                const token_refresh = {
+                    access_token: token,
+                    token_type: auth_token_type,
+                    email: user.email,
+                };
+                axios.post(
+                    "http://localhost:8000/auth/token_refresh",
+                    token_refresh
+                ).then((response) => {
+                    console.log('NEW TOKEN Response:', response);
+                    localStorage.setItem("auth_token", response.data.result.access_token);
+                    localStorage.setItem("auth_token_type", response.data.result.token_type);
+                })
+
+                setTimeout(() => {
+                    onClose();
+                    window.location.reload();
+                }, 1000);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     };
 
-    // Checks if the reset password button should be enabled
-    const isResetButtonEnabled = email !== '' && password !== '' && confirmPassword !== '' && password === confirmPassword;
+    const isResetButtonEnabled =
+        user.email !== '' && password !== '' && confirmPassword !== '' && password === confirmPassword;
 
-    /**
-     * Handles the click event of the reset password button.
-     * Calls the onSubmitHandler function if the button is enabled.
-     *
-     * @function handleResetPassword
-     */
     const handleResetPassword = () => {
         if (isResetButtonEnabled) {
             onSubmitHandler();
         }
     };
 
-    // JSX structure for the ForgotPassword component
     return (
-        <div className="flex justify-center min-h-screen items-start relative pt-20">
-            <div className='w-80'>
-                <div>
-                    <h1 className="font-regular uppercase text-xl text-white text-center mb-10">
-                        Forgot your password
-                    </h1>
+        <div className="fixed inset-0  flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-md">
+            <div className="bg-[#1B223C] p-8 font-outfit rounded-3xl w-96">
+                <div className="flex justify-end">
+                    <button onClick={onClose} className="text-white hover:text-[#9291E8] duration-200">
+                        <XMarkIcon className="h-5 w-5" />
+                    </button>
                 </div>
+                <div className="flex justify-center">
+                    <h1 className=" uppercase tracking-[.2em] text-xl text-white -mt-6 mb-4">Update Password</h1>
+                </div>
+
                 <form>
                     <div className='space-y-6 w-full'>
-                        {/* Email input for password recovery */}
                         <input
                             type='text'
+                            readOnly={true}
                             placeholder='Email Address'
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            value={user.email}
                             className='block text-sm py-3 px-4 rounded-3xl w-full border text-center outline-none focus:ring focus:outline-none ring-[#DFC9C2]'
                         />
-                        {/* Password input with option to toggle visibility */}
                         <div className='relative'>
                             <input
                                 type={showPassword ? 'text' : 'password'}
@@ -98,7 +89,6 @@ export const ForgotPassword = () => {
                                 {showPassword ? <LockOpenIcon className="h-6 w-6" /> : <LockClosedIcon className="h-6 w-6" />}
                             </span>
                         </div>
-                        {/* Confirm password input with option to toggle visibility */}
                         <div className='relative'>
                             <input
                                 type={showConfirmPassword ? 'text' : 'password'}
@@ -116,30 +106,17 @@ export const ForgotPassword = () => {
                         </div>
                     </div>
                     <div className='text-center mt-6 text-white'>
-                        {/* Reset password button with conditional styling based on button state */}
                         <button
                             type='button'
                             onClick={handleResetPassword}
-                            className={`duration-300 bg-[#364c78] ${
-                                isResetButtonEnabled
-                                    ? 'hover:bg-customDullBlue hover:border-customDullBlue'
-                                    : 'cursor-not-allowed opacity-50'
-                            } w-full py-3 rounded-3xl mb-10`}
+                            className={`duration-300 bg-[#364c78] ${isResetButtonEnabled
+                                ? 'hover:bg-customDullBlue hover:border-customDullBlue'
+                                : 'cursor-not-allowed opacity-50'
+                                } w-full py-3 rounded-3xl mb-10`}
                             disabled={!isResetButtonEnabled}
                         >
                             Reset Password
                         </button>
-                    </div>
-                    <div className='flex flex-col items-center mt-6'>
-                        {/* Link to login page for users with existing accounts */}
-                        <p className='text-center text-sm text-white font-light'>
-                            Already have an account?
-                        </p>
-                        <Link to="/login">
-                            <p className='text-[#9291E8] text-center duration-200 text-m cursor-pointer hover:text-white'>
-                                Login
-                            </p>
-                        </Link>
                     </div>
                 </form>
             </div>
@@ -147,4 +124,4 @@ export const ForgotPassword = () => {
     );
 };
 
-export default ForgotPassword;
+export default UpdatePassword;
