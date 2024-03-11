@@ -89,15 +89,10 @@ const UpdateAccount = ({ user, onClose }) => {
         setTimeout(() => {
             onClose();
             window.location.reload();
-        }, 700);
+        }, 1000);
     };
-
-
-
-
-
     return (
-        <div className="fixed inset-0  flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-md">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-md">
             <div className="bg-[#1B223C] p-8 font-outfit rounded-3xl">
                 <div className="flex justify-end">
                     <button onClick={onClose} className="text-white hover:text-[#9291E8] duration-200">

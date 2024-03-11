@@ -4,6 +4,7 @@ import Logout from './Logout';
 import UpdateAccount from './UpdateAccount';
 import Popup from 'reactjs-popup';
 import UpdateAddress from './UpdateAddress';
+import UpdatePassword from './UpdatePassword';
 
 export const CustomerAccount = () => {
   const [user, setUser] = useState({});
@@ -93,23 +94,23 @@ export const CustomerAccount = () => {
                 <div className="items-center text-center flex-row justify-center  bg-[#D9D9D9] bg-opacity-40 p-8 rounded-3xl mb-10 h-fit">
                   <div className='font-medium uppercase text-2xl'>password</div>
                   <p className='w-80 font-light'>Make your password stronger, or change it if someone else knows it.</p>
-                  <div className='mt-4 text-[#69A9D7] uppercase text-center duration-200 text-xl cursor-pointer hover:text-white'>
-                    change password
-                  </div>
-                </div>
-                <div className="items-center text-center flex-row justify-center  bg-[#D9D9D9] bg-opacity-40 p-8 rounded-3xl mb-10 h-fit">
-                  <div className='font-medium uppercase text-2xl'>order history</div>
-                  <p className='w-80 font-light'>Track orders and view previous orders.</p>
-                  <div className='mt-4 text-[#69A9D7] uppercase text-center duration-200 text-xl cursor-pointer hover:text-white'>
-                    track orders
-                  </div>
+                  <Popup
+                    trigger={<button className='mt-10 text-[#69A9D7] uppercase text-center duration-200 text-xl cursor-pointer hover:text-white'>Change Password</button>}
+                    modal
+                    nested>
+                    {(close) => (
+                      <div>
+                        <UpdatePassword user={user} onClose={close} />
+                      </div>
+                    )}
+                  </Popup>
                 </div>
               </div>
               <div className="ml-10 w-80  text-center flex-row bg-[#D9D9D9] bg-opacity-40 p-10 rounded-3xl mb-10">
-                <div className='font-medium uppercase text-2xl'>payment info</div>
-                <p className='font-light'>keep your latest banking details. To ensure swift delivery of memories</p>
+                <div className='font-medium uppercase text-2xl'>order history</div>
+                <p className='font-light'>Track orders and view previous orders.</p>
                 <div className='mt-10 text-[#69A9D7] uppercase text-center duration-200 text-xl cursor-pointer hover:text-white'>
-                  update card info
+                track orders
                 </div>
               </div>
 
