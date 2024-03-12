@@ -16,3 +16,6 @@ class Person(SQLModel, TimeMixin, table=True):
 
     customers: Optional["Customers"] = Relationship(
         sa_relationship_kwargs={'uselist': False}, back_populates="person")
+
+    photographer: Optional["Photographer"] = Relationship(
+        sa_relationship_kwargs={'uselist': False}, back_populates="person")

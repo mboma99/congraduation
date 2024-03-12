@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Security
 from fastapi import HTTPException
-from backend.app.service.schema import ResponseSchema
+from backend.app.service.schema import ResponseSchema, PersonProfileUpdate,CustomerProfileUpdate
 from backend.app.repository.auth_repo import JWTBearer, JWTRepo
 from fastapi.security import HTTPAuthorizationCredentials
 from backend.app.service.customers import CustomerService
@@ -30,13 +30,13 @@ async def is_user_logged_in(credentials: HTTPAuthorizationCredentials = Security
         raise HTTPException(status_code=401, detail="Invalid token or expired", result=False)
 
 @router.put("/update_customer_profile", response_model=ResponseSchema, response_model_exclude_none=True)
-async def update_user_profile(request_body: dict, credentials: HTTPAuthorizationCredentials = Security(JWTBearer())):
+async def update_user_profile(request_body: CustomerProfileUpdate, credentials: HTTPAuthorizationCredentials = Security(JWTBearer())):
     token = JWTRepo.extract_token(credentials)
     await CustomerService.update_customer_profile(token['email'], request_body)
     return ResponseSchema(detail="Successfully update data!")
 
 @router.put("/update_person_profile", response_model=ResponseSchema, response_model_exclude_none=True)
-async def update_person_profile(request_body: dict, credentials: HTTPAuthorizationCredentials = Security(JWTBearer())):
+async def update_person_profile(request_body: PersonProfileUpdate, credentials: HTTPAuthorizationCredentials = Security(JWTBearer())):
     token = JWTRepo.extract_token(credentials)
     await CustomerService.update_person_profile(token['email'], request_body)
     return ResponseSchema(detail="Successfully update data!")

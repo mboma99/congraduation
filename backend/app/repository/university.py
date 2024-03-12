@@ -3,7 +3,6 @@ from backend.app.model.university import Universities
 from sqlalchemy.future import select
 from backend.app.config import db
 
-
 class UniversityRepository(BaseRepo):
     model = Universities
 
