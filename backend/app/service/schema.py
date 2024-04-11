@@ -5,7 +5,7 @@ import logging
 import re
 from typing import TypeVar, Optional
 
-from pydantic import BaseModel, validator, ValidationError, Field
+from pydantic import BaseModel, validator, ValidationError, Field, HttpUrl
 from sqlalchemy import false
 
 T = TypeVar('T')
@@ -54,7 +54,18 @@ class RegisterPhotographerSchema(BaseModel):
             raise HTTPException(status_code=400, detail="Invalid input phone number!")
         return v
 
-
+class CreatePortfolioSchema(BaseModel):
+    id: str = Field(None, example="1")
+    photographer_id: str = Field(None, example="1")
+    customer_first_name: str = Field(None, example="John")
+    customer_last_name: str = Field(None, example="Doe")
+    customer_email: Optional[str] = Field(None, example="customer@example.com")
+    university_id: str = Field(None, example="1")
+    graduation_year: int = Field(None, example=2022)
+    is_active: bool = Field(None, example=True)
+    created_at: Optional[datetime] = Field(None, example="2022-01-01T00:00:00")
+    edited_at: Optional[datetime] = Field(None, example="2022-02-01T00:00:00")
+    
 class LoginSchema(BaseModel):
     email: str  = Field(None, example="john.doe@example.com")
     password: str = Field(None, example="password")
@@ -67,22 +78,22 @@ class ForgotPasswordSchema(BaseModel):
 class PortfolioSchema(BaseModel):
     id: str = Field(None, example="1")
     photographer_id: str = Field(None, example="1")
+    customer_first_name: str = Field(None, example="John")
+    customer_last_name: str = Field(None, example="Doe")
+    customer_email: Optional[str] = Field(None, example="customer@example.com")
     university_id: str = Field(None, example="1")
-    graduation_year: str = Field(None, example="2022")
+    graduation_year: int = Field(None, example=2022)
     is_active: bool = Field(None, example=True)
     created_at: Optional[datetime] = Field(None, example="2022-01-01T00:00:00")
-    updated_at: Optional[datetime] = Field(None, example="2022-02-01T00:00:00")
+    edited_at: Optional[datetime] = Field(None, example="2022-02-01T00:00:00")
     
 class PhotoSchema(BaseModel):
-    uuid: str = Field(None, example="1")
+    id: str = Field(None, example="1")
     portfolio_id: str = Field(None, example="1")
-    image_url: str = Field(None, example="https://example.com/image.jpg")
+    image_url: HttpUrl = Field(None, example="https://example.com/image.jpg")
     
 class PhotographerUpdateSchema(BaseModel):
-    first_name: Optional[str] = Field(None, example="John")
-    last_name: Optional[str] = Field(None, example="John")
     email: Optional[str] = Field(None, example="john.doe@example.com")
-    phone_number: Optional[str] = Field(None, example="+771234567890")
     
 class CustomerProfileUpdate(BaseModel):
     email: str = Field(None, example="john.doe@example.com")
@@ -95,7 +106,7 @@ class CustomerProfileUpdate(BaseModel):
 class PersonProfileUpdate(BaseModel):
     first_name: Optional[str] = Field(None, example="John")
     last_name: Optional[str] = Field(None, example="John")
-    phone_number: Optional[str] = Field(None, example="+77 1234567890")
+    phone_number: Optional[str] = Field(None, example="+771234567890")
     
 class DetailSchema(BaseModel):
     status: str
@@ -105,7 +116,15 @@ class DetailSchema(BaseModel):
 class ResponseSchema(BaseModel):
     detail: str
     result: Optional[T] = None
+
+class PhotoResponse(BaseModel):
+    id: str = Field(None, example="1")
+    portfolio_id: str = Field(None, example="1")
+    image_url: HttpUrl = Field(None, example="https://example.com/image.jpg") 
     
+class PhotosResponse(BaseModel):
+    photos: Optional[list[PhotoResponse]] = Field(None, example=[{"id": "1", "portfolio_id": "1", "image_url": "https://example.com/image.jpg"}])
+         
 class CustomerProfileResponse(BaseModel):
     email: str = Field(None, example="john.doe@example.com")
     first_name: str = Field(None, example="John")
@@ -126,6 +145,7 @@ class PhotographerProfileResponse(BaseModel):
     portfolios: Optional[list] = Field(None, example=[{"uuid": "1", "portfolio_uuid": "1", "image_url": "https://example.com/image.jpg"}]) 
 
 class PortfolioResponse(BaseModel):
+    id: str = Field(None, example="1")
     photographer_id: str = Field(None, example="1")
     customer_first_name: str = Field(None, example="John")
     customer_last_name: str = Field(None, example="Doe")
@@ -133,14 +153,18 @@ class PortfolioResponse(BaseModel):
     university_id: str = Field(None, example="1")
     graduation_year: int = Field(None, example=2022)
     is_active: bool = Field(None, example=True)
+    photos: Optional[list[PhotoResponse]] = Field(None, example=[{"id": "1", "portfolio_id": "1", "image_url": "https://example.com/image.jpg"}])
     created_at: Optional[datetime] = Field(None, example="2022-01-01T00:00:00")
-    updated_at: Optional[datetime] = Field(None, example="2022-02-01T00:00:00")
-
-class PhotoResponse(BaseModel):
-    uuid: str = Field(None, example="1")
-    portfolio_id: str = Field(None, example="1")
-    image_url: str = Field(None, example="https://example.com/image.jpg") 
+    edited_at: Optional[datetime] = Field(None, example="2022-02-01T00:00:00")
     
+class PortfolioUpdateResponse(BaseModel):
+    customer_first_name: str = Field(None, example="John")
+    customer_last_name: str = Field(None, example="Doe")
+    customer_email: Optional[str] = Field(None, example="customer@example.com")
+    university_id: str = Field(None, example="1")
+    graduation_year: int = Field(None, example=2022)
+    is_active: bool = Field(None, example=True)
+
 class RefreshTokenSchema(BaseModel):
     access_token: str
     token_type: str

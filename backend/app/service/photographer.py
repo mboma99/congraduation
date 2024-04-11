@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.future import select
 from backend.app.model import Photographer, Person,Portfolio
 from backend.app.config import db
-from backend.app.service.schema import PhotographerProfileResponse
+from backend.app.service.schema import PhotographerProfileResponse, PhotographerUpdateSchema,PersonProfileUpdate
 
 class PhotographerService:
     
@@ -31,7 +31,7 @@ class PhotographerService:
         return PhotographerProfileResponse(**photographer_dict)
     
     @staticmethod
-    async def update_photographer_profile(email: str, new_data: PhotographerProfileResponse):
+    async def update_photographer_profile(email: str, new_data: PhotographerUpdateSchema):
         query = (
             select(Photographer)
             .join_from(Photographer, Person)
@@ -40,16 +40,15 @@ class PhotographerService:
 
         result = await db.execute(query)
         photographer = result.scalars().one()
-
-        # Update the customer data
-        for key, value in new_data.items():
-            setattr(photographer, key, value)
-
+        ## Update the photographer data
+        if new_data.email is not None:
+            photographer.email = new_data.email
+        
         # Commit the changes
         await db.commit()
     
     @staticmethod
-    async def update_person_profile(email: str, new_data: dict):
+    async def update_person_profile(email: str, new_data: PersonProfileUpdate):
         query = (
             select(Person)
             .join_from(Person, Photographer)
@@ -60,8 +59,12 @@ class PhotographerService:
         person = result.scalars().one()
 
         # Update the customer data
-        for key, value in new_data.items():
-            setattr(person, key, value)
+        if new_data.first_name is not None:
+            person.first_name = new_data.first_name
+        if new_data.last_name is not None:
+            person.last_name = new_data.last_name
+        if new_data.phone_number is not None:
+            person.phone_number = new_data.phone_number
 
         # Commit the changes
         await db.commit()
