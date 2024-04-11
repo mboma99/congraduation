@@ -1,6 +1,6 @@
 
 from sqlalchemy.future import select
-from backend.app.model import Customers, Person, Universities
+from backend.app.model import Customers, Person
 from backend.app.config import db
 from backend.app.service.schema import CustomerProfileResponse
 

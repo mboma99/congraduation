@@ -33,9 +33,12 @@ def init_app():
     async def shutdown():
         await db.close()
 
-    from backend.app.controller import authentication, customers
+    from backend.app.controller import authentication, customers, photographer, portfolio, photo
     temp_app.include_router(authentication.router)
     temp_app.include_router(customers.router)
+    temp_app.include_router(photographer.router)
+    temp_app.include_router(portfolio.router)
+    temp_app.include_router(photo.router)
     return temp_app
 
 app = init_app()
