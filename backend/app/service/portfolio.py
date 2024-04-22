@@ -1,11 +1,15 @@
 from uuid import uuid4
 from sqlalchemy.orm import Session
-import datetime
+import datetime, boto3,os
 from sqlalchemy.future import select
 from backend.app.model import Portfolio, Photo
 from backend.app.config import db
 from backend.app.service.schema import PortfolioResponse, PortfolioSchema,PortfolioUpdateResponse, PhotoResponse
 from sqlalchemy import delete
+from dotenv import load_dotenv
+
+load_dotenv()
+S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
 
 class PortfolioService: 
  
@@ -99,15 +103,14 @@ class PortfolioService:
         # Commit the changes
         await db.commit()
         
-    
-    @staticmethod
-    async def create_portfolio(new_portfolio_data: PortfolioSchema):
+    @staticmethod 
+    async def create_portfolio(new_portfolio_data: PortfolioSchema, photographer_id: str):
         _portfolio_id = str(uuid4())
         _created_at = datetime.datetime.now()
         _edited_at = datetime.datetime.now()
         _new_portfolio = Portfolio(
             id=_portfolio_id,
-            photographer_id=new_portfolio_data.photographer_id,
+            photographer_id=photographer_id,
             customer_first_name=new_portfolio_data.customer_first_name,
             customer_last_name=new_portfolio_data.customer_last_name,
             customer_email=new_portfolio_data.customer_email,
@@ -116,17 +119,42 @@ class PortfolioService:
             created_at=_created_at,
             edited_at=_edited_at
         )
-        db.add(_new_portfolio)
-        await db.commit()
-        return _new_portfolio
+        try:
+            db.add(_new_portfolio)
+            await db.commit()
+            
+            # Create S3 bucket folder
+            s3_folder_key = f"{_portfolio_id}/"
+            s3_client = boto3.client('s3')
+            s3_client.put_object(Bucket=S3_BUCKET_NAME, Key=s3_folder_key)
+            
+            return _new_portfolio
+        except Exception as e:
+            # Rollback the database transaction in case of an error
+            await db.rollback()
+            raise e
 
     @staticmethod
     async def delete_portfolio(portfolio_id: str):
-        async with db.begin():
-            # Delete photos associated with the portfolio
+        try:
+            s3 = boto3.resource('s3')
+            bucket = s3.Bucket(S3_BUCKET_NAME)
+            key_prefix = f"{portfolio_id}/"
+            bucket.objects.filter(Prefix=key_prefix).delete()
+            
+        except Exception as e:
+            raise e
+
+        if db.in_transaction():
+            # Use the existing transaction
+            transaction = db.transaction()
+        else:
+            # Start a new transaction
+            transaction = db.begin()
+
+        try:
             await db.execute(delete(Photo).where(Photo.portfolio_id == portfolio_id))
 
-            # Delete the portfolio itself
             query = (
                 delete(Portfolio)
                 .where(Portfolio.id == portfolio_id)
@@ -135,6 +163,40 @@ class PortfolioService:
             result = await db.execute(query)
             deleted_portfolio = result.scalar()
 
+            # Commit the transaction for the database operation
+            await transaction.commit()
+
             return deleted_portfolio
+        except Exception as e:
+            # Rollback the transaction in case of an error
+            await transaction.rollback()
+            raise e  # Re-raise the exception to propagate it further
+
+    
+    @staticmethod
+    async def delete_portfolio2(portfolio_id: str):
+        async with db.begin() as transaction:
+            try:
+                # Delete photos associated with the portfolio
+                await db.execute(delete(Photo).where(Photo.portfolio_id == portfolio_id))
+
+                # Delete the portfolio itself
+                query = (
+                    delete(Portfolio)
+                    .where(Portfolio.id == portfolio_id)
+                    .returning(Portfolio)
+                )
+                result = await db.execute(query)
+                deleted_portfolio = result.scalar()
+
+                # Commit the transaction
+                await transaction.commit()
+
+                return deleted_portfolio
+            except Exception as e:
+                # Rollback the transaction in case of an error
+                await transaction.rollback()
+                raise e  # Re-raise the exception to propagate it further
+
     
         
