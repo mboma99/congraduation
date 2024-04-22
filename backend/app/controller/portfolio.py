@@ -51,27 +51,51 @@ async def update_portfolio(portfolio_id: str, request_body: PortfolioUpdateRespo
     return ResponseSchema(detail="Successfully update data!")
 
 @router.post("/create_portfolio/{photographer_id}", response_model=ResponseSchema, response_model_exclude_none=True)
-async def create_portfolio(request_body: CreatePortfolioSchema):
-    new_portfolio = await PortfolioService.create_portfolio(request_body)
-    #create new s3 bucket
-    portfolio_id = new_portfolio.id
-    s3_folder_key = f"{portfolio_id}/"
-    s3_client = boto3.client('s3')
-    s3_client.put_object(Bucket=S3_BUCKET_NAME, Key=s3_folder_key)
-    return ResponseSchema(detail="Successfully create data!")
+async def create_portfolio(request_body: CreatePortfolioSchema, photographer_id: str):
+    try:
+        await PortfolioService.create_portfolio(request_body, photographer_id)
+        return ResponseSchema(detail="Successfully create data!")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/{portfolio_id}/upload_photo", response_model=ResponseSchema, response_model_exclude_none=True, status_code=201)
-async def upload_photo(file: UploadFile , portfolio_id: str):
-    print ("create endpoint ")
-    #upload photo to s3
-    s3 = boto3.resource('s3')
-    bucket = s3.Bucket(S3_BUCKET_NAME)
-    key = f"{portfolio_id}/{file.filename}"
-    bucket.upload_fileobj(file.file, key)
-    
-    uploaded_file_url = f"https://{S3_BUCKET_NAME}.s3.amazonaws.com/{key}"
-    #store photo url to database
-    await PhotoService.create_photo(portfolio_id, uploaded_file_url)
-    return ResponseSchema(detail="Successfully create data!", result=uploaded_file_url)
+async def upload_photo(file: UploadFile, portfolio_id: str):
+    try:
+        s3 = boto3.resource('s3')
+        bucket = s3.Bucket(S3_BUCKET_NAME)
+        key = f"{portfolio_id}/{file.filename}"
+        bucket.upload_fileobj(file.file, key)
+        
+        uploaded_file_url = f"https://{S3_BUCKET_NAME}.s3.amazonaws.com/{key}"
+        await PhotoService.create_photo(portfolio_id, uploaded_file_url)
+        return ResponseSchema(detail="Successfully create data!", result=uploaded_file_url)
+    except Exception as e:
+        return ResponseSchema(detail=f"Failed to upload photo: {str(e)}", status_code=500)
 
+@router.delete("/{portfolio_id}/delete_photo/{photo_id}", response_model=ResponseSchema, response_model_exclude_none=True)
+async def delete_photo(portfolio_id: str, photo_id: str):
+    try:
+        # Delete photo from S3
+        s3 = boto3.resource('s3')
+        bucket = s3.Bucket(S3_BUCKET_NAME)
+        key = f"{portfolio_id}/{photo_id}"
+        bucket.delete_objects(Delete={'Objects': [{'Key': key}]})
+        
+        # Delete photo from the database
+        await PhotoService.delete_photo(photo_id)
+        
+        return ResponseSchema(detail="Successfully deleted data!")
+    except Exception as e:
+        # Handle any errors that occur during the deletion process
+        return ResponseSchema(detail=f"Failed to delete data: {str(e)}", status_code=500)
+
+@router.delete("/delete_portfolio/{portfolio_id}", response_model=ResponseSchema, response_model_exclude_none=True)
+async def delete_portfolio(portfolio_id: str):
+    try:
+        await PortfolioService.delete_portfolio(portfolio_id)
+        return ResponseSchema(detail="Successfully delete data!")
+    except Exception as e:
+        # Handle any errors that occur during the deletion process
+        return ResponseSchema(detail=f"Failed to delete data: {str(e)}", status_code=500)
+    

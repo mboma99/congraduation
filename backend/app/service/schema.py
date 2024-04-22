@@ -55,16 +55,12 @@ class RegisterPhotographerSchema(BaseModel):
         return v
 
 class CreatePortfolioSchema(BaseModel):
-    id: str = Field(None, example="1")
-    photographer_id: str = Field(None, example="1")
     customer_first_name: str = Field(None, example="John")
     customer_last_name: str = Field(None, example="Doe")
     customer_email: Optional[str] = Field(None, example="customer@example.com")
     university_id: str = Field(None, example="1")
     graduation_year: int = Field(None, example=2022)
-    is_active: bool = Field(None, example=True)
-    created_at: Optional[datetime] = Field(None, example="2022-01-01T00:00:00")
-    edited_at: Optional[datetime] = Field(None, example="2022-02-01T00:00:00")
+    is_active: bool = Field(None, example=False)
     
 class LoginSchema(BaseModel):
     email: str  = Field(None, example="john.doe@example.com")
@@ -96,17 +92,17 @@ class PhotographerUpdateSchema(BaseModel):
     email: Optional[str] = Field(None, example="john.doe@example.com")
     
 class CustomerProfileUpdate(BaseModel):
-    email: str = Field(None, example="john.doe@example.com")
-    university: Optional[str] = Field(None, example="De Montfort University")
-    university_id: Optional[str] = Field(None, example="1")
-    address: Optional[str] = Field(None, example="1234 Main Street")
-    postcode: Optional[str] = Field(None, example="LE1 7RH")
-    city: Optional[str] = Field(None, example="Leicester")
-    
+    email: str
+    university: str
+    university_id: str
+    address: str
+    postcode: str
+    city: str
+
 class PersonProfileUpdate(BaseModel):
-    first_name: Optional[str] = Field(None, example="John")
-    last_name: Optional[str] = Field(None, example="John")
-    phone_number: Optional[str] = Field(None, example="+771234567890")
+    first_name: str
+    last_name: str
+    phone_number: str
     
 class DetailSchema(BaseModel):
     status: str

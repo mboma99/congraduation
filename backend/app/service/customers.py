@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.future import select
 from backend.app.model import Customers, Person, Universities
 from backend.app.config import db
-from backend.app.service.schema import CustomerProfileResponse
+from backend.app.service.schema import CustomerProfileResponse, PersonProfileUpdate
 
 class CustomerService:
 
@@ -51,7 +51,7 @@ class CustomerService:
 
         # Commit the changes
         await db.commit()
-    
+
     @staticmethod
     async def update_person_profile(email: str, new_data: dict):
         query = (
@@ -69,3 +69,4 @@ class CustomerService:
 
         # Commit the changes
         await db.commit()
+        

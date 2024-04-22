@@ -64,20 +64,28 @@ class AuthService:
                     status_code=400, detail="Invalid Password !")
             return JWTRepo(data={"email": _email.email}).generate_token()
         raise HTTPException(status_code=404, detail="email not found !")
-
+    
     @staticmethod
     async def forgot_password_service(forgot_password: ForgotPasswordSchema):
-        _email = await CustomerRepository.find_by_email(forgot_password.email)
+        _customer = await CustomerRepository.find_by_email(forgot_password.email)
+        _email = _customer.email
         if _email is None:
             raise HTTPException(status_code=404, detail="Email not found !")
         await CustomerRepository.update_password(forgot_password.email, pwd_context.hash(forgot_password.new_password))
+        return JWTRepo(data={"email": _customer.email}).generate_token()
+     
+    async def photographer_forgot_password_service(forgot_password: ForgotPasswordSchema):
+        _email = await PhotographerRepository.find_by_email(forgot_password.email)
+        if _email is None:
+            raise HTTPException(status_code=404, detail="Email not found !")
+        await PhotographerRepository.update_password(forgot_password.email, pwd_context.hash(forgot_password.new_password))
 
-        _email = await CustomerRepository.find_by_email(login.email)
+        _email = await CustomerRepository.find_by_email(forgot_password.email)
         if _email is not None:
             raise HTTPException(status_code=400, detail="Invalid Email !")
-        _photographer = await CustomerRepository.find_by_email(login.email)
+        _photographer = await CustomerRepository.find_by_email(forgot_password.email)
         if _photographer is not None:
-            if not pwd_context.verify(login.password, _photographer.password):
+            if not pwd_context.verify(forgot_password.password, _photographer.password):
                 raise HTTPException(
                     status_code=400, detail="Invalid Password !")
             return JWTRepo(data={"email": _photographer.email}).generate_token()
