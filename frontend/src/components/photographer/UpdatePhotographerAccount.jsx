@@ -9,18 +9,6 @@ const UpdateAccount = ({ user, onClose }) => {
         setUpdatedUser((prevUser) => ({ ...prevUser, [name]: value }));
     };
 
-    const handleUniversityChange = (e) => {
-        const { value } = e.target;
-        setUpdatedUser((prevUser) => ({ ...prevUser, university_id: value }));
-    };
-
-    const options = [
-        { value: "", label: "Select University" },
-        { value: "1", label: "De Montfort University" },
-        { value: "2", label: "Staffordshire University" },
-        { value: "3", label: "Nottingham Trent University" },
-        { value: "4", label: "Birmingham University" }
-    ]
 
     const handleUpdateProfile = () => {
         const auth_token = localStorage.getItem('auth_token');
@@ -44,7 +32,7 @@ const UpdateAccount = ({ user, onClose }) => {
 
         if (Object.keys(personalProfileFields).length !== 0) {
             axios
-                .put("http://localhost:8000/customer/update_person_profile", personalProfileFields, {
+                .put("http://localhost:8000/photographer/update_person_profile", personalProfileFields, {
                     headers: { Authorization: token },
                 })
                 .then((response) => {
@@ -57,7 +45,7 @@ const UpdateAccount = ({ user, onClose }) => {
 
         if (Object.keys(customerProfileFields).length !== 0) {
             axios
-                .put("http://localhost:8000/customer/update_customer_profile", customerProfileFields, {
+                .put("http://localhost:8000/photographer/update_photographer_profile", customerProfileFields, {
                     headers: { Authorization: token },
                 })
                 .then((response) => {
@@ -68,12 +56,12 @@ const UpdateAccount = ({ user, onClose }) => {
                             token_type: auth_token_type,
                             email: updatedUser.email,
                         };
-                        console.log('email payload:', emailUpdatePayload);
+                        //console.log('email payload:', emailUpdatePayload);
                         axios.post(
                             "http://localhost:8000/auth/token_refresh",
                             emailUpdatePayload
                         ).then((response) => {
-                            console.log('NEW TOKEN Response:', response);
+                            //console.log('NEW TOKEN Response:', response);
                             localStorage.setItem("auth_token", response.data.result.access_token);
                             localStorage.setItem("auth_token_type", response.data.result.token_type);
                         })
@@ -142,31 +130,10 @@ const UpdateAccount = ({ user, onClose }) => {
                         placeholder='Phone Number'
                         value={updatedUser.phone_number}
                         onChange={handleInputChange}
-                        className="w-full text-sm py-3 px-4 rounded-3xl border outline-none focus:ring focus:outline-none"
+                        className="w-full text-sm py-3 px-4 rounded-3xl w-full border outline-none focus:ring focus:outline-none"
                     />
                 </div>
-                <h1 className=" font-regular uppercase text-l mb-4 text-white text-center cursor-pointer mb-10">
-                    university
-                </h1>
-                <select className=' mb-4 block text-sm py-3 px-3 rounded-3xl w-full border-r-8 border-transparent outline-none focus:ring focus:outline-none'
-                    value={updatedUser.university_id}
-                    onChange={handleUniversityChange}>
-                    {options.map((data) => {
-                        if (data.value === "") {
-                            return (
-                                <option key={data.label} value={data.value} disabled>
-                                    {data.label}
-                                </option>
-                            );
-                        } else {
-                            return (
-                                <option key={data.label} value={data.value}>
-                                    {data.label}
-                                </option>
-                            );
-                        }
-                    })}
-                </select>
+                
 
 
 

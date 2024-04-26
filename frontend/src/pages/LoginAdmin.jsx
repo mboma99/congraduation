@@ -5,7 +5,7 @@ import BackgroundActions from '../components/backgrounds/BackgroundActions';
 import { LockClosedIcon, LockOpenIcon } from '@heroicons/react/24/outline';
 import axios from 'axios';
 
-export const Login = () => {
+export const LoginAdmin = () => {
   const [loginForm, setLoginForm] = useState({
     email: '',
     password: '',
@@ -37,15 +37,18 @@ export const Login = () => {
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();
-
+  
     // Email validation: Check if email is null
     if (loginForm.email === '') {
       setEmailErrorMessage('please enter an email');
       setIsEmailValid(false);
       return;
     }
-
-    if (loginForm.email !== '' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginForm.email)) {
+  
+    if (
+      loginForm.email !== '' &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginForm.email)
+    ) {
       setIsEmailValid(false);
       setEmailErrorMessage('Invalid email format');
       return;
@@ -53,58 +56,72 @@ export const Login = () => {
       setIsEmailValid(true);
       setEmailErrorMessage('');
     }
-
+  
     // Password validation: Check if password is not null or empty
     const isValidPassword = loginForm.password.trim() !== '';
     setIsPasswordValid(isValidPassword);
-
+  
     if (!isValidPassword) {
       setPasswordErrorMessage('Password cannot be empty');
       return;
     } else {
       setPasswordErrorMessage('');
     }
-
+  
     // Call API for login
     try {
-      const response = await axios.post("http://localhost:8000/auth/login", loginForm);
+      const response = await axios.post(
+        'http://localhost:8000/auth/login_photographer',
+        loginForm
+      );
       console.log(response);
-
-      
-      // Save token to local storage
-      localStorage.setItem("auth_token", response.data.result.access_token);
-      localStorage.setItem("auth_token_type", response.data.result.token_type);
-      const auth_token = localStorage.getItem("auth_token");
-      const auth_token_type = localStorage.getItem("auth_token_type");
-      const token = auth_token_type + " " + auth_token;
-      axios
-      .get("http://localhost:8000/customer/", {
-        headers: { Authorization: token },
-      })
-      .then((response) => {
-        localStorage.setItem("user_type", response.data.result.user_type);
-        const user  = response.data.result;
-        console.log(response);
   
-        // Redirect to account-admin page if user exists
-        window.location.href = `/account/${user.id}&${(user.first_name).charAt(0)}&${user.last_name}`;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      // Save token to local storage
+      localStorage.setItem('auth_token', response.data.result.access_token);
+      localStorage.setItem(
+        'auth_token_type',
+        response.data.result.token_type
+      );
+      const auth_token = localStorage.getItem('auth_token');
+      const auth_token_type = localStorage.getItem('auth_token_type');
+      const token = auth_token_type + ' ' + auth_token;
+      axios
+        .get('http://localhost:8000/photographer/', {
+          headers: { Authorization: token },
+        })
+        .then((response) => {
+          localStorage.setItem('user_type', response.data.result.user_type);
+          const user  = response.data.result;
+          console.log(response);
+  
+          // Redirect to account-admin page if user exists
+          window.location.href = `/account-admin/${user.id}&${(user.first_name).charAt(0)}&${user.last_name}`;
+
+
+        })
+        .catch((error) => {
+          console.log(error);
+  
+          // Handle email not found error (404)
+          if (error.response.status === 404) {
+            setEmailErrorMessage('Email not found');
+            setIsEmailValid(false);
+          }
+        });
     } catch (error) {
       // Handle login failure
       console.error(error);
       setLoginFailed(true);
     }
   };
+  
 
   return (
     <div className="flex justify-center min-h-screen items-start relative pt-20">
       <div className="w-80 ">
         <div>
           <h1 className="font-regular uppercase text-xl text-white text-center mb-10">
-            Welcome Back
+            Admin Login
           </h1>
         </div>
         <form onSubmit={onSubmitHandler}>
@@ -176,4 +193,4 @@ export const Login = () => {
   );
 };
 
-export default Login;
+export default LoginAdmin;

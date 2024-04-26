@@ -15,6 +15,11 @@ class PhotographerRepository(BaseRepo):
         return (await db.execute(query)).scalar_one_or_none()
 
     @staticmethod
+    async def find_by_photographer_id(photographer_id: str):
+        query = select(Photographer).where(Photographer.id == photographer_id)
+        return (await db.execute(query)).scalar_one_or_none()
+    
+    @staticmethod
     async def update_password(email: str, password: str):
         query = sql_update(Photographer).where(Photographer.email == email).values(
             password=password).execution_options(synchronize_session="fetch")

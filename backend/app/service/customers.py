@@ -10,6 +10,7 @@ class CustomerService:
     async def get_customer_profile(email: str):
         query = (
             select(
+                Customers.id,
                 Customers.email,
                 Person.first_name,
                 Person.last_name,
@@ -30,6 +31,7 @@ class CustomerService:
 
         # Convert the result to a dictionary
         customer_dict = dict(customer_data)
+        customer_dict['user_type'] = 'customer'
 
         # Return an instance of CustomerProfileResponse
         return CustomerProfileResponse(**customer_dict)

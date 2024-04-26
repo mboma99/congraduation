@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Logout from './Logout';
+import Logout from '../Logout'
 import UpdateAccount from './UpdateAccount';
 import Popup from 'reactjs-popup';
 import UpdateAddress from './UpdateAddress';

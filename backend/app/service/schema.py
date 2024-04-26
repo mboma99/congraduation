@@ -35,7 +35,18 @@ class RegisterSchema(BaseModel):
         if v and not re.search(regex, v, re.I):
             raise HTTPException(status_code=400, detail="Invalid input phone number!")
         return v
-
+    
+class PortfolioRegisterSchema(BaseModel):
+    photographer_id: str = Field(None, example="1")
+    customer_first_name: str = Field(None, example="John")
+    customer_last_name: str = Field(None, example="Doe")
+    customer_email: Optional[str] = Field(None, example="customer@example.com")
+    university_id: str = Field(None, example="1")
+    graduation_year: int = Field(None, example=2022)
+    is_active: bool = Field(None, example=True)
+    created_at: Optional[datetime] = Field(None, example="2022-01-01T00:00:00")
+    edited_at: Optional[datetime] = Field(None, example="2022-02-01T00:00:00")
+    
 class RegisterPhotographerSchema(BaseModel):
     first_name: str = Field(None, example="John")
     last_name: str = Field(None, example="Doe")
@@ -82,6 +93,9 @@ class PortfolioSchema(BaseModel):
     is_active: bool = Field(None, example=True)
     created_at: Optional[datetime] = Field(None, example="2022-01-01T00:00:00")
     edited_at: Optional[datetime] = Field(None, example="2022-02-01T00:00:00")
+
+
+    
     
 class PhotoSchema(BaseModel):
     id: str = Field(None, example="1")
@@ -122,6 +136,7 @@ class PhotosResponse(BaseModel):
     photos: Optional[list[PhotoResponse]] = Field(None, example=[{"id": "1", "portfolio_id": "1", "image_url": "https://example.com/image.jpg"}])
          
 class CustomerProfileResponse(BaseModel):
+    id: str = Field(None, example="1")
     email: str = Field(None, example="john.doe@example.com")
     first_name: str = Field(None, example="John")
     last_name: str = Field(None, example="Doe")
@@ -131,6 +146,7 @@ class CustomerProfileResponse(BaseModel):
     address: str = Field(None, example="1234 Main Street")
     postcode: str = Field(None, example="LE1 7RH")
     city: str = Field(None, example="Leicester")
+    user_type: str
     
 class PhotographerProfileResponse(BaseModel):
     id: str = Field(None, example="1")
@@ -139,7 +155,8 @@ class PhotographerProfileResponse(BaseModel):
     last_name: str = Field(None, example="Doe")
     phone_number: str = Field(None, example="+771234567890")
     portfolios: Optional[list] = Field(None, example=[{"uuid": "1", "portfolio_uuid": "1", "image_url": "https://example.com/image.jpg"}]) 
-
+    user_type: str
+    
 class PortfolioResponse(BaseModel):
     id: str = Field(None, example="1")
     photographer_id: str = Field(None, example="1")

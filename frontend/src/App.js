@@ -6,15 +6,29 @@ import Background from './components/backgrounds/Background';
 import BackgroundActions from './components/backgrounds/BackgroundActions';
 
 import Navbar from './components/navigation/Navbar';
+import FocusedNavbar from './components/navigation/FocusedNavbar';
 import Home from './pages/Home';
 import About from './pages/About';
 import Login from './pages/Login';
+import LoginAdmin from './pages/LoginAdmin';
 
 import { Shop } from './pages/Shop';
 import { Cart } from './pages/Cart';
 import RegisterForm from './pages/RegisterForm';
 import ForgotPassword from './pages/ForgotPassword';
 import CustomerAccount from './components/customer/CustomerAccount';
+import PhotographerAccount from './components/photographer/PhotographerAccount';
+import ManagePortfolio from './components/portfolio/ManagePortfolio';
+
+
+
+const USER_TYPES = {
+  PUBLIC: 'Public User',
+  NORMAL_USER: "customer",
+  ADMIN_USER: "photographer"
+}
+
+const CURRENT_USER_TYPE = localStorage.getItem('user_type');
 
 function App() {
   const [token, setToken] = useState();
@@ -26,21 +40,37 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="relative overflow-hidden bg-[#1B223C] font-outfit">
-        <Background />
+      <div className="relative bg-[#1B223C] font-outfit bg-gradient-to-br from-[#54B8D8]/55 to-customIndigo/40">
+        <NotAdminUser>
         <Navbar />
-        <div className="flex flex-col max-w-screen-xl mx-auto relative z-10">
+        </NotAdminUser>
+        <AdminUser>
+            <FocusedNavbar />
+        </AdminUser>
+        <div className="flex flex-col justify-between max-w-screen-xl mx-auto">
           <div className="flex-grow">
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/" 
+              element={ 
+              <PublicElement>
+                <Home />
+              </PublicElement>
+             } />
+              <Route path='*' element= {<Home/>}/>
               <Route path="/about" element={<About />} />
-              <Route path="/shop" element={<Shop />} />
+              <Route path="/shop/:search_key" element={<Shop />} />
               <Route path="/cart" element={<Cart />} />
-              {token !== null && token !== undefined ? (
-                <Route path="/account" element={<CustomerAccount />} />
-              ) : (
-                <Route path="/login" element={<Login />} />
-              )}
+                <Route path="/account/:userId" element={
+                  <NormalUser>
+                    <CustomerAccount />
+                  </NormalUser>
+              } />
+              <Route path="/account-admin/:userId" element={<AdminUser><PhotographerAccount /></AdminUser>} />
+              
+              <Route path='/manage-portfolio/:portfolio_id' element={<AdminUser><ManagePortfolio /></AdminUser>} />
+              
+              <Route path="/login" element={<Login />} />
+              <Route path="/login-admin" element={<LoginAdmin />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/register" element={<RegisterForm />} />
             </Routes>
@@ -51,5 +81,28 @@ function App() {
     </BrowserRouter>
   );
 }
-
+function PublicElement({children}) {
+  return <>{children}</>
+}
+function NotAdminUser({children}){
+  if(CURRENT_USER_TYPE !== USER_TYPES.ADMIN_USER){
+    return <>{children}</>;
+  } else {
+    return <></>
+  }
+}
+function NormalUser({children}){
+  if(CURRENT_USER_TYPE === USER_TYPES.NORMAL_USER){
+    return <>{children}</>;
+  } else {
+    return <></>
+  }
+}
+function AdminUser({children}){
+  if(CURRENT_USER_TYPE === USER_TYPES.ADMIN_USER){
+    return <>{children}</>;
+  } else {
+    return <></>
+  }
+}
 export default App;

@@ -127,3 +127,10 @@ class AuthService:
         if _email is not None:
             return JWTRepo(data={"email": _email.email}).generate_token()
         raise HTTPException(status_code=404, detail="email not found !")
+    
+    @staticmethod
+    async def token_refresh_service_photographer(refresh_token: RefreshTokenSchema):
+        _email = await PhotographerRepository.find_by_email(refresh_token.email)
+        if _email is not None:
+            return JWTRepo(data={"email": _email.email}).generate_token()
+        raise HTTPException(status_code=404, detail="email not found !")

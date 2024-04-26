@@ -1,21 +1,20 @@
 import React, { useState } from 'react';
 import { ShoppingBagIcon, UserIcon } from '@heroicons/react/24/outline';
 import { Link, useNavigate } from 'react-router-dom';
+import logo from '../assets/icons8-graduation-cap-64.png';
 
 export const Navbar = () => {
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Function to handle the UserIcon click
   const handleUserIconClick = () => {
-    // Check if the user is logged in (you can use your authentication logic here)
-    // If logged in, redirect to the account page
-    // Otherwise, redirect to the login page
-    // Replace the condition with your actual authentication check
     const isLoggedIn = localStorage.getItem('auth_token');
+    const userType = localStorage.getItem('user_type');
 
-    if (isLoggedIn) {
+    if (userType === 'customer') {
       navigate('/account');
+    } else if(userType === 'photographer') {
+      navigate('/admin_account');
     } else {
       navigate('/login');
     }
@@ -30,7 +29,7 @@ export const Navbar = () => {
     <nav>
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto pt-10 p-4">
         <h1 className='tracking-[.3em] uppercase text-2xl font-semibold text-white text-center cursor-pointer'>
-          <Link to='/'>congraduation</Link>
+          <Link to='/' className="flex items-center" ><img  className=' w-9' src={logo} alt="Your Logo" style={{ marginRight: '5px' }} /><span>congraduation</span></Link>
         </h1>
         <button
           type="button"

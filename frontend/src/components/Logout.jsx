@@ -9,8 +9,16 @@ export default function logout() {
         // remove token form local storage
         localStorage.removeItem("auth_token");
         localStorage.removeItem("auth_token_type");
+        const user_type = localStorage.getItem("user_type")
+        let hyperRef = ''
+        if (user_type === "photographer"){
+            hyperRef = '/login-admin'
+        } else {
+            hyperRef = '/login'
+        }
+        localStorage.removeItem("user_type")
 
-        window.location.href = "/login";
+        window.location.href = hyperRef;
     };
 
     return (

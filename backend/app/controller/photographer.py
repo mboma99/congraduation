@@ -24,7 +24,7 @@ async def update_photographer_profile(request_body:PhotographerUpdateSchema , cr
     return ResponseSchema(detail="Successfully update data!")
 
 @router.put("/update_person_profile", response_model=ResponseSchema, response_model_exclude_none=True)
-async def update_person_profile(request_body: PersonProfileUpdate, credentials: HTTPAuthorizationCredentials = Security(JWTBearer())):
+async def update_person_profile(request_body: dict, credentials: HTTPAuthorizationCredentials = Security(JWTBearer())):
     token = JWTRepo.extract_token(credentials)
     await PhotographerService.update_person_profile(token['email'], request_body)
     return ResponseSchema(detail="Successfully update data!")
