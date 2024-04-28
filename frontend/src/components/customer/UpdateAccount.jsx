@@ -142,7 +142,7 @@ const UpdateAccount = ({ user, onClose }) => {
                         placeholder='Phone Number'
                         value={updatedUser.phone_number}
                         onChange={handleInputChange}
-                        className="w-full text-sm py-3 px-4 rounded-3xl w-full border outline-none focus:ring focus:outline-none"
+                        className="w-full text-sm py-3 px-4 rounded-3xl border outline-none focus:ring focus:outline-none"
                     />
                 </div>
                 <h1 className=" font-regular uppercase text-l mb-4 text-white text-center cursor-pointer mb-10">

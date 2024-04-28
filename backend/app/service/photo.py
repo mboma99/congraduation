@@ -1,11 +1,16 @@
 from sqlalchemy.orm import Session
 from uuid import uuid4
 import datetime
+from fastapi import HTTPException, UploadFile
 from sqlalchemy.future import select
 from backend.app.model import Photo, Portfolio
 from backend.app.config import db
 from backend.app.service.schema import PhotoSchema, PhotoResponse, PhotosResponse
+from backend.app.repository.photo import PhotoRepository
+from backend.app.repository.portfolio import PortfolioRepository
+from backend.app.repository.product_type import ProductTypeRepository
 from sqlalchemy import delete
+from botocore.exceptions import ClientError
 import boto3 
 import os
 from dotenv import load_dotenv 
@@ -15,71 +20,118 @@ load_dotenv()
 S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
 
 class PhotoService:
-
-    @staticmethod
+    
+    
     async def get_photos(portfolio_id: str):
-        # Fetch photos related to the portfolio
-        query = select(
-            Photo.id,
-            Photo.image_url
-        ).where(Photo.portfolio_id == portfolio_id)
-        result = await db.execute(query)
-        photos = result.fetchall()
-
-        # Convert the photo tuples to PhotoResponse instances
-        photo_list = [PhotoResponse(id=row[0], image_url=row[1]) for row in photos]
-
-        # Return an instance of PhotosResponse
-        return PhotosResponse(photos=photo_list)
+        _portfolio = await PortfolioRepository.get_by_id(portfolio_id)
+        if _portfolio:
+            #get all photos with match portfolio id 
+            _photos = await PhotoRepository.find_by_portfolio_id(portfolio_id)
+            photos = []
+            for photo in _photos:
+                _product_type = await ProductTypeRepository.get_by_id(photo.product_type_id)
+                if not _product_type:
+                    raise Exception("Product type not found.")
+                _price = _product_type.price
+                _photo_response = PhotoResponse(
+                id=photo.id,
+                portfolio_id=photo.portfolio_id,
+                image_url=photo.image_url,
+                price=_price,
+                stripe_id= _product_type.stripe_id
+                )
+                photos.append(_photo_response)
+            return {
+                'id': _portfolio.id,
+                'photographer_id': _portfolio.photographer_id,
+                'customer_first_name': _portfolio.customer_first_name,
+                'customer_last_name': _portfolio.customer_last_name,
+                'customer_email': _portfolio.customer_email,
+                'graduation_year': _portfolio.graduation_year,
+                'university_id': _portfolio.university_id,
+                'is_active': _portfolio.is_active,
+                'photos': photos
+            }
+        else:
+            raise HTTPException(status_code=404, detail="Portfolio not found")
+        
+    @staticmethod
+    async def get_photos_by_customer_email(email: str):
+        __portfolio = await PortfolioRepository.find_by_customer_email(email)
+        if not __portfolio:
+            raise Exception("Portfolio not found.")
+        _portfolio= __portfolio[0]
+        if _portfolio:
+            #get all photos with match portfolio id 
+            _photos = await PhotoRepository.find_by_portfolio_id(_portfolio.id)
+            photos = []
+            for photo in _photos:
+                _product_type = await ProductTypeRepository.get_by_id(photo.product_type_id)
+                if not _product_type:
+                    raise Exception("Product type not found.")
+                _price = _product_type.price
+                _photo_response = PhotoResponse(
+                id=photo.id,
+                portfolio_id=photo.portfolio_id,
+                image_url=photo.image_url,
+                price=_price,
+                stripe_id= _product_type.stripe_id
+                )
+                photos.append(_photo_response)
+                
+            
+            return {
+                'id': _portfolio.id,
+                'photographer_id': _portfolio.photographer_id,
+                'customer_first_name': _portfolio.customer_first_name,
+                'customer_last_name': _portfolio.customer_last_name,
+                'customer_email': _portfolio.customer_email,
+                'graduation_year': _portfolio.graduation_year,
+                'university_id': _portfolio.university_id,
+                'is_active': _portfolio.is_active,
+                'photos': photos
+            }
+        else:
+            raise HTTPException(status_code=404, detail="Portfolio not found")
 
     @staticmethod
     async def get_photo(photo_id: str):
-        query = (
-            select(Photo.id,
-                   Photo.portfolio_id,
-                   Photo.image_url
-                   )
-            .where(Photo.id == photo_id)
+        _photo = await PhotoRepository.get_by_id(photo_id)
+        if not _photo:
+            raise Exception("Photo not found.")
+        _product_type = await ProductTypeRepository.get_by_id(_photo.product_type_id)
+        if not _product_type:
+            raise Exception("Product type not found.")
+        _price = _product_type.price
+        _photo_response = PhotoResponse(
+            id=_photo.id,
+            portfolio_id=_photo.portfolio_id,
+            image_url=_photo.image_url,
+            price=_price
         )
-
-        result = await db.execute(query)
-        photo = result.mappings().one()
-        if photo is None:
-            print(f"No photo found for photo_id: {photo_id}")
-            return None
-
-        print(f"Retrieved photo data: {photo}")
-        photo_dict = dict(photo)
-
-        # Return an instance of PhotoResponse
-        return PhotoResponse(**photo_dict)
+        return _photo_response
     
     @staticmethod
-    async def create_photo(portfolio_id: str, image_url: str):
+    async def create_photo(file: UploadFile, portfolio_id: str):
+        _portfolio = await PortfolioRepository.find_by_portfolio_id(portfolio_id)
+        if not _portfolio:
+            raise Exception("Portfolio not found.")
         try:
-            
-            query = (
-            select(Portfolio.id
-                   )
-            .where(Portfolio.id == portfolio_id))
-            result = await db.execute(query)
-            portfolio = result.mappings().one()
-            if portfolio is None:
-                raise Exception("Portfolio not found.")
-            
-            
-            _photo_id = str(uuid4())
-            _new_photo_data = Photo (
+            s3 = boto3.resource('s3')
+            bucket = s3.Bucket(S3_BUCKET_NAME)
+            key = f"{portfolio_id}/{file.filename}"
+            bucket.upload_fileobj(file.file, key, ExtraArgs={'ACL': 'public-read'})
+            _file_url = f"https://{S3_BUCKET_NAME}.s3.amazonaws.com/{key}"
+        except Exception as e:
+            return Exception("Portfolio not found.")(detail=f"Failed to upload photo: {str(e)}", status_code=500)
+        _photo_id = str(uuid4())
+        _new_photo_data = Photo (
                 id=_photo_id,
                 portfolio_id=portfolio_id,
-                image_url=image_url
+                image_url=_file_url,
+                product_type_id= "1"
             )
-            db.add(_new_photo_data)
-            await db.commit()
-            return _new_photo_data
-        except Exception as e:
-            await db.rollback()
-            raise e
+        await PhotoRepository.create(**_new_photo_data.dict())
 
     
     @staticmethod
@@ -106,42 +158,28 @@ class PhotoService:
 
     @staticmethod
     async def delete_photo(portfolio_id: str, photo_id: str):
+        _photo = await PhotoRepository.get_by_id(photo_id)
+        if not _photo:
+            raise Exception("Photo not found.")
+        
+        _portfolio = await PortfolioRepository.get_by_id(portfolio_id)
+        print ('WE GOT HERE porfolio made ')
+        if not _portfolio:
+            raise HTTPException(status_code=404, detail="Portfolio not found")
+        print ('WE GOT HERE  porfolio not empty')
+        # Check if portfolio is active
         try:
-            query = (
-                select(Photo)
-                .where(Photo.id == photo_id)
-            )
-            result = await db.execute(query)
-            photo = result.fetchone()
-            if photo:
-                await db.execute(delete(Photo).where(Photo.id == photo_id))
-                await db.commit()
-            else:
-                raise Exception("Photo not found.")
+            # Delete photo from S3 bucket
+            print ('WE GOT HERE ')
             s3 = boto3.resource('s3')
             bucket = s3.Bucket(S3_BUCKET_NAME)
             key = f"{portfolio_id}/{photo_id}"
-            bucket.delete_object(Delete={'Objects': [{'Key': key}]})
-        except Exception as e:
-            await db.rollback()
-            raise e
-        
-    
-    @staticmethod
-    async def delete_photo2(photo_id: str):
-        try:
-            
-            query = (
-                select(Photo)
-                .where(Photo.id == photo_id)
-            )
-            result = await db.execute(query)
-            photo = result.fetchone()
-            if photo:
-                await db.execute(delete(Photo).where(Photo.id == photo_id))
-                await db.commit()
+            bucket.delete_objects(Delete={'Objects': [{'Key': key}]})
+        except ClientError as e:
+            if e.response['Error']['Code'] == 'NoSuchBucket':
+                raise HTTPException(status_code=404, detail="Bucket not found")
+            elif e.response['Error']['Code'] == 'AccessDenied':
+                raise HTTPException(status_code=403, detail="Access denied to bucket")
             else:
-                raise Exception("Photo not found.")
-        except Exception as e:
-            await db.rollback()
-            raise e  
+                raise HTTPException(status_code=500, detail="Failed to delete portfolio in S3 bucket")
+        await PhotoRepository.delete(photo_id)

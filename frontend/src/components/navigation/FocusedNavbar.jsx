@@ -1,12 +1,162 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { ShoppingBagIcon, UserIcon, InformationCircleIcon, HomeIcon } from '@heroicons/react/24/outline';
+import { Link, useNavigate } from 'react-router-dom';
+import { Image, Divider } from '@chakra-ui/react';
+import logo from '../assets/icons8-graduation-cap-64.png';
+import axios from 'axios';
+import { CartContext } from '../../CartContext';
+import CartProduct from '../CartProduct';
+import { loadStripe } from '@stripe/stripe-js';
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  useDisclosure,
+  ChakraProvider
+} from '@chakra-ui/react';
 
-export const FocusedNavbar = () => {
-    return (
-        <div className="max-w-screen-xl flex flex-wrap items-center justify-center mx-auto pt-10 p-4">
-            <h1 className='tracking-[.3em] uppercase text-2xl font-semibold text-white text-center cursor-pointer'><Link to='/'>congraduation</Link></h1>
+export const Navbar = () => {
+  const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const cart = useContext(CartContext);
+  const [stripePromise, setStripePromise] = useState(null);
+
+  useState(() => {
+    const stripe = loadStripe('pk_test_51HLUDEAxTn6e6ofy786wd731S8fvF30ZKoHQFI2Bc5cONfgSrOMA447wEk9SdA3asLlWgNAebYPiK6PLsOThmJmE00gOaqfO6U');
+    setStripePromise(stripe);
+  }, []);
+
+  const productsCount = cart.items.reduce((sum, product) => sum + product.quantity, 0);
+
+  const handleUserIconClick = () => {
+    const userType = localStorage.getItem('user_type');
+    const auth_token = localStorage.getItem('auth_token');
+    const auth_token_type = localStorage.getItem('auth_token_type');
+    const token = auth_token_type + ' ' + auth_token;
+
+    if (userType === 'customer') {
+      axios
+        .get("http://localhost:8000/customer/", {
+          headers: { Authorization: token },
+        })
+        .then((response) => {
+          const user = response.data.result;
+          window.location.href = `/account/${user.id}&${(user.first_name).charAt(0)}&${user.last_name}`;
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 403) {
+            // Remove token and user type from local storage
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('auth_token_type');
+            localStorage.removeItem('user_type');
+            navigate('/login');
+          }
+          console.error(error);
+        });
+
+    } else if (userType === 'photographer') {
+      axios
+        .get('http://localhost:8000/photographer/', {
+          headers: { Authorization: token },
+        })
+        .then((response) => {
+          const user = response.data.result;
+          navigate(`/account-admin/${user.id}&${user.first_name.charAt(0)}&${user.last_name}`);
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 403) {
+            // Remove token and user type from local storage
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('auth_token_type');
+            localStorage.removeItem('user_type');
+            navigate('/login-admin');
+          }
+          console.error('Error fetching photographer:', error);
+          navigate('/login-admin');
+        });
+    } else {
+      navigate('/login');
+    }
+  };
+
+
+  // Function to toggle the mobile menu
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const checkout = async () => {
+    console.log(cart.items)
+    try {
+      const stripe = await stripePromise;
+      const response = await axios.post('http://localhost:8000/stripe/checkout/', {
+        items: cart.items
+      });
+
+      if (response.data.id) {
+        const result = await stripe.redirectToCheckout({
+          sessionId: response.data.id,
+        });
+
+        if (result.error) {
+          console.error('Error during checkout:', result.error);
+        }
+      }
+    } catch (error) {
+      console.error('Error during checkout:', error);
+    }
+  };
+
+
+  return (
+    <nav>
+      <div className="max-w-screen-xl md:flex md:flex-wrap mb:items-center md:justify-between md:mx-auto md:pt-10 md:ml-5 md:mr-5 xl:ml-auto xl:mr-auto">
+        <h1 className='sm:w-full md:w-auto tracking-[.3em] flex justify-center mt-5 md:mt-0 uppercase text-2xl font-semibold text-white text-center cursor-pointer'>
+          <Link to='/' className="flex items-center" ><img className='w-10 md:w-9' src={logo} style={{ marginRight: '5px' }} /><span>congraduation</span></Link>
+        </h1>
+        <button
+          type="button"
+          className="inline-flex items-center md:p-2 md:w-10 md:h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden">
+        </button>
+
+        <div className=" w-full rounded-full md:ml-0 md:mr-0 md:block pt-7 h-20 md:pt-0 md:h-0 md:w-auto bg-gray-700 z-10 bottom-4 md:bottom-0 fixed md:relative md:bg-transparent" id="navbar-default">
+          <ul className="flex text-base justify-evenly tracking-[.3em] uppercase flex-row md:space-x-10 md:mt-0">
+            <li className="block md:hidden "> 
+            <Link to='/'>
+              <HomeIcon className="h-6 w-6 text-white hover:text-blue-600 " />
+            </Link>
+            </li>
+            <li className="hidden md:block">
+              <p className="hover:text-gray-800 text-white">
+                <Link to='/about'>
+                  About
+                </Link>
+              </p>
+            </li>
+
+            <li className="block md:hidden">
+              <Link to='/about'>
+                <InformationCircleIcon className="h-6 w-6 text-white hover:text-blue-600 md:hover:text-gray-800" />
+              </Link>
+            </li>
+            <li>
+              <button onClick={handleUserIconClick} className="focus:outline-none">
+                <UserIcon className="h-6 w-6 text-white hover:text-blue-600 md:hover:text-gray-800" />
+              </button>
+            </li>
+          </ul>
         </div>
-    )
-}
+      </div>
+      
 
-export default FocusedNavbar
+    </nav>
+  );
+};
+
+export default Navbar;

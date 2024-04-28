@@ -3,11 +3,12 @@ from uuid import uuid4
 from fastapi import HTTPException
 from passlib.context import CryptContext
 from backend.app.model import Person, Customers, Photographer
+from backend.app.repository.access import AccessRepository
 from backend.app.repository.customer import CustomerRepository
 from backend.app.repository.university import UniversityRepository
 from backend.app.repository.person import PersonRepository
 from backend.app.repository.photographer import PhotographerRepository
-from backend.app.service.schema import LoginSchema, ForgotPasswordSchema, RegisterSchema, RefreshTokenSchema
+from backend.app.service.schema import CustomerDeleteSchema, ForgotPasswordPhotographerSchema, LoginSchema, ForgotPasswordSchema, PhotographerDeleteSchema, RegisterSchema, RefreshTokenSchema
 from backend.app.repository.auth_repo import JWTRepo
 
 
@@ -74,27 +75,21 @@ class AuthService:
         await CustomerRepository.update_password(forgot_password.email, pwd_context.hash(forgot_password.new_password))
         return JWTRepo(data={"email": _customer.email}).generate_token()
      
-    async def photographer_forgot_password_service(forgot_password: ForgotPasswordSchema):
-        _email = await PhotographerRepository.find_by_email(forgot_password.email)
-        if _email is None:
+    async def photographer_forgot_password_service(forgot_password: ForgotPasswordPhotographerSchema):
+        _photographer = await PhotographerRepository.find_by_email(forgot_password.email)
+        if _photographer is None:
             raise HTTPException(status_code=404, detail="Email not found !")
+        _access = await AccessRepository.get_by_id(forgot_password.access_id)
+        if _access is None:
+            raise HTTPException(status_code=404, detail="You don't have Access !")
         await PhotographerRepository.update_password(forgot_password.email, pwd_context.hash(forgot_password.new_password))
-
-        _email = await CustomerRepository.find_by_email(forgot_password.email)
-        if _email is not None:
-            raise HTTPException(status_code=400, detail="Invalid Email !")
-        _photographer = await CustomerRepository.find_by_email(forgot_password.email)
-        if _photographer is not None:
-            if not pwd_context.verify(forgot_password.password, _photographer.password):
-                raise HTTPException(
-                    status_code=400, detail="Invalid Password !")
-            return JWTRepo(data={"email": _photographer.email}).generate_token()
-        raise HTTPException(status_code=404, detail="email not found !")
+        return JWTRepo(data={"email": _photographer.email}).generate_token()
     
     @staticmethod
     async def register_photographer_service(register: RegisterSchema):
         _person_id = str(uuid4())
         _photographer_id = str(uuid4())
+        _access_id = register.access_id
         _person = Person(id=_person_id,
                          first_name=register.first_name,
                          last_name=register.last_name,
@@ -107,6 +102,10 @@ class AuthService:
         if _email:
             raise HTTPException(
                 status_code=400, detail="Email already exists!")
+        _await = await AccessRepository.get_by_id(_access_id)
+        if _await is None:
+            raise HTTPException(
+                status_code=404, detail="You don't have Access !")
         else:
             await PersonRepository.create(**_person.dict())
             await PhotographerRepository.create(**_photographer.dict())
@@ -127,3 +126,23 @@ class AuthService:
         if _email is not None:
             return JWTRepo(data={"email": _email.email}).generate_token()
         raise HTTPException(status_code=404, detail="email not found !")
+    
+    @staticmethod
+    async def token_refresh_service_photographer(refresh_token: RefreshTokenSchema):
+        _email = await PhotographerRepository.find_by_email(refresh_token.email)
+        if _email is not None:
+            return JWTRepo(data={"email": _email.email}).generate_token()
+        raise HTTPException(status_code=404, detail="email not found !")
+    
+    @staticmethod
+    async def delete_customer_service(request: CustomerDeleteSchema):
+        _customer = await CustomerRepository.find_by_email(request.email)
+        if _customer is None:
+            raise HTTPException(status_code=404, detail="email not found !")
+        _access = await AccessRepository.get_by_id(request.access_id)
+        if _access is None:
+            raise HTTPException(status_code=404, detail="You don't have Access to delete!")
+        await CustomerRepository.delete(_customer.id)
+        await PersonRepository.delete(_customer.person_id)
+        return "Successfully delete data!"
+  

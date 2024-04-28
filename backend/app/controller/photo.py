@@ -22,10 +22,18 @@ async def get_photo(photo_id: str):
     else:
         return ResponseSchema(detail="Photo not found", result=None)
 
-@router.get("/all_photos/{portfolio_id}", response_model=PhotosResponse, response_model_exclude_none=True)
+@router.get("/all_photos/{portfolio_id}", response_model=PortfolioResponse, response_model_exclude_none=True)
 async def get_all_photos(portfolio_id: str):
     result = await PhotoService.get_photos(portfolio_id)
     if result:
         return result
     else:
         return ResponseSchema(detail="No photos found for the portfolio", result=None)
+    
+@router.get("/photos_by_customer_email/{email}", response_model=PortfolioResponse, response_model_exclude_none=True)
+async def get_photos_by_customer_email(email: str):
+    result = await PhotoService.get_photos_by_customer_email(email)
+    if result:
+        return result
+    else:
+        return ResponseSchema(detail="No photos found for the customer", result=None)

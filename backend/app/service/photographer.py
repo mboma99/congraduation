@@ -26,12 +26,13 @@ class PhotographerService:
 
         # Convert the result to a dictionary
         photographer_dict = dict(photographer_data)
+        photographer_dict['user_type'] = 'photographer'
 
         # Return an instance of CustomerProfileResponse
         return PhotographerProfileResponse(**photographer_dict)
     
     @staticmethod
-    async def update_photographer_profile(email: str, new_data: PhotographerUpdateSchema):
+    async def update_photographer_profile(email: str, new_data: dict):
         query = (
             select(Photographer)
             .join_from(Photographer, Person)
@@ -48,23 +49,20 @@ class PhotographerService:
         await db.commit()
     
     @staticmethod
-    async def update_person_profile(email: str, new_data: PersonProfileUpdate):
+    async def update_person_profile(email: str, new_data: dict):
         query = (
             select(Person)
             .join_from(Person, Photographer)
             .where(Photographer.email == email)
         )
 
+        
         result = await db.execute(query)
         person = result.scalars().one()
 
         # Update the customer data
-        if new_data.first_name is not None:
-            person.first_name = new_data.first_name
-        if new_data.last_name is not None:
-            person.last_name = new_data.last_name
-        if new_data.phone_number is not None:
-            person.phone_number = new_data.phone_number
+        for key, value in new_data.items():
+            setattr(person, key, value)
 
         # Commit the changes
         await db.commit()
