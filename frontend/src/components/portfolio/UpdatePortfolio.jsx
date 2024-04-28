@@ -43,9 +43,7 @@ const UpdatePortfolio = ({ portfolio, onClose }) => {
               })
               .then((response) => {
                 //reload the page
-                //window.location.reload();
                 console.log(response);
-                console.log(updatedPortfolio);
               })
               .catch((error) => {
                 console.log(error);
@@ -54,8 +52,8 @@ const UpdatePortfolio = ({ portfolio, onClose }) => {
           }
         setTimeout(() => {
             onClose();
-            //window.location.reload();
-        }, 1000);
+            window.location.reload();
+        }, 500);
     };
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-md">

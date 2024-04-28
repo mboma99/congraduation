@@ -29,27 +29,6 @@ class PortfolioService:
                 return _portfolios       
             else:
                 raise HTTPException(status_code=404, detail="Photographer not found")
-    
-    
-    @staticmethod
-    async def get_portfolio(portfolio_id: str):
-        _portfolio = await PortfolioRepository.get_by_id(portfolio_id)
-        if _portfolio:
-            #get all photos with match portfolio id 
-            _photos = await PhotoRepository.find_by_portfolio_id(portfolio_id)
-            return {
-                'id': _portfolio.id,
-                'photographer_id': _portfolio.photographer_id,
-                'customer_first_name': _portfolio.customer_first_name,
-                'customer_last_name': _portfolio.customer_last_name,
-                'customer_email': _portfolio.customer_email,
-                'graduation_year': _portfolio.graduation_year,
-                'university_id': _portfolio.university_id,
-                'is_active': _portfolio.is_active,
-                'photos': _photos
-            }
-        else:
-            raise HTTPException(status_code=404, detail="Portfolio not found")
 
     @staticmethod
     async def update_portfolio(portfolio_id: str, new_data: dict):

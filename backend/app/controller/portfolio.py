@@ -21,7 +21,7 @@ router = APIRouter(
 
 @router.get("/specific_portfolio/{portfolio_id}", response_model=PortfolioResponse, response_model_exclude_none=True)
 async def get_portfolio(portfolio_id: str):
-    result = await PortfolioService.get_portfolio(portfolio_id)
+    result = await PhotoService.get_photos(portfolio_id)
     if result:
         return result
     else:

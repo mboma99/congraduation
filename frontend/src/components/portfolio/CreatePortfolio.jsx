@@ -23,8 +23,8 @@ const CreatePortfolio = ({ photographer_id, onClose }) => {
       });
       onClose();
       // Reload the page 
-      console.log(portfolioData)
-      //window.location.reload();
+      //console.log(portfolioData)
+      window.location.reload();
     } catch (error) {
       console.error('Error creating portfolio:', error);
       console.log(photographer_id);

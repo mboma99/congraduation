@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from fastapi import HTTPException
-from backend.app.service.schema import ResponseSchema, RegisterSchema, LoginSchema, ForgotPasswordSchema, RefreshTokenSchema, RegisterPhotographerSchema
+from backend.app.service.schema import CustomerDeleteSchema, ForgotPasswordPhotographerSchema, ResponseSchema, RegisterSchema, LoginSchema, ForgotPasswordSchema, RefreshTokenSchema, RegisterPhotographerSchema
 from backend.app.service.auth_service import AuthService
 
 router = APIRouter(prefix="/auth", tags=['Authentication'])
@@ -21,6 +21,11 @@ async def login(request_body: LoginSchema):
 async def forgot_password(request_body: ForgotPasswordSchema):
     await AuthService.forgot_password_service(request_body)
     return ResponseSchema(detail="Successfully update data!")
+
+@router.delete("/delete/customer", response_model=ResponseSchema, response_model_exclude_none=True)
+async def delete(request_body: CustomerDeleteSchema):
+    await AuthService.delete_customer_service(request_body)
+    return ResponseSchema(detail="Successfully delete data!")
 
 @router.post("/token_refresh", response_model=ResponseSchema, response_model_exclude_none=True)
 async def token_refresh(request_body: RefreshTokenSchema):
@@ -50,3 +55,8 @@ async def register_photographer(request_body: RegisterPhotographerSchema):
 async def login_photographer(request_body: LoginSchema):
     token = await AuthService.login_photographer_service(request_body)
     return ResponseSchema(detail="Successfully login", result={"token_type": "Bearer", "access_token": token})
+
+@router.post("/forgot-password_photographer", response_model=ResponseSchema, response_model_exclude_none=True)
+async def forgot_password_photographer(request_body: ForgotPasswordPhotographerSchema):
+    token = await AuthService.photographer_forgot_password_service(request_body)
+    return ResponseSchema(detail="Successfully update data!", result={"token_type": "Bearer", "access_token": token})

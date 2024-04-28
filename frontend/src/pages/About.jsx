@@ -29,18 +29,13 @@ export const About = () => {
           receiving your order. To be eligible for a return, your item must be unused and in
           the same condition that you received it. It must also be in the original packaging.
         </p>
-        <h2 className='mt-5 '>WHAT WE OFFER</h2>
-        <p className='font-thin' >
-          ConGraduation is a one-stop-shop for all your graduation photography needs. Whether
-          you’re a photographer, a graduate, or an administrator, our platform has something
-          for you.
-        </p>
-        <h2 class=' mt-5 uppercase'>What We Offer</h2>
-        <ul class='list-disc list-inside font-thin ml-3'>
-          <li class='mb-2'>User-Focused Portals: We provide customized portals for three distinct user groups: Photographers, Graduates, and Administrators. Each portal is tailored to meet the unique needs and expectations of its users, ensuring a personalized experience.</li>
-          <li class='mb-2'>Seamless Image Management: ConGraduation offers robust tools for uploading, organizing, and showcasing your photography. Photographers can effortlessly upload and manage their work, graduates can easily find and interact with their photos, and administrators can efficiently oversee user profiles and products.</li>
-          <li class='mb-2'>User Interaction and Engagement: Our platform fosters meaningful interactions and engagement among our users. Whether it's photographers receiving feedback from their audience, graduates connecting with their special moments, or administrators facilitating a thriving community, ConGraduation is all about engagement.</li>
-          <li class='mb-2'>Secure and Ethical: We take the privacy and security of your data seriously. ConGraduation is committed to upholding the highest ethical standards, ensuring the safety and well-being of all users.</li>
+        
+        <h2 className=' mt-5 uppercase'>What We Offer</h2>
+        <ul className='list-disc list-inside font-thin ml-3'>
+          <li className='mb-2'>User-Focused Portals: We provide customized portals for three distinct user groups: Photographers, Graduates, and Administrators. Each portal is tailored to meet the unique needs and expectations of its users, ensuring a personalized experience.</li>
+          <li className='mb-2'>Seamless Image Management: ConGraduation offers robust tools for uploading, organizing, and showcasing your photography. Photographers can effortlessly upload and manage their work, graduates can easily find and interact with their photos, and administrators can efficiently oversee user profiles and products.</li>
+          <li className='mb-2'>User Interaction and Engagement: Our platform fosters meaningful interactions and engagement among our users. Whether it's photographers receiving feedback from their audience, graduates connecting with their special moments, or administrators facilitating a thriving community, ConGraduation is all about engagement.</li>
+          <li className='mb-2'>Secure and Ethical: We take the privacy and security of your data seriously. ConGraduation is committed to upholding the highest ethical standards, ensuring the safety and well-being of all users.</li>
         </ul>
 
 
@@ -53,11 +48,6 @@ export const About = () => {
         <p className='font-thin'>
           We invite you to join our vibrant ConGraduation community of photographers, graduates, and administrators. Whether you're a seasoned photographer looking for a platform to showcase your work, a graduate seeking to relive and cherish your special moments, or an administrator interested in managing this dynamic ecosystem, ConGraduation is the place to be.
         </p>
-
-        
-
-
-        <hr className="my-2 border-t-2 border-b-1 border-white w-full" />
       </div>
 
     </div>

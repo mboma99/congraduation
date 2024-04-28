@@ -67,7 +67,9 @@ const getUniversityName = (id) => {
       if (updatedPortfolio.graduation_year) {
         updatedPortfolio.graduation_year = parseInt(updatedPortfolio.graduation_year);
       }
-      updatedPortfolio.is_active = JSON.parse(updatedPortfolio.is_active);
+      if (updatedPortfolio.is_active){
+        updatedPortfolio.is_active = JSON.parse(updatedPortfolio.is_active);
+      }
       
       axios
         .put(`http://localhost:8000/portfolio/update_portfolio/${editId}`, updatedPortfolio, {
@@ -103,52 +105,52 @@ const getUniversityName = (id) => {
   };
 
   return (
-    <div className="table-container" style={{ overflowX: 'auto' }}>
-      <h2 className='font-semibold text-3xl uppercase'> Manage Portfolios</h2>
-      <table className="mt-2 border-collapse border border-gray-400 text-black">
+    <><h2 className='font-semibold text-xl md:text-3xl uppercase'> Manage Portfolios</h2>
+    <div className="overflow-auto rounded-xl mt-5">
+      <table className="border-collapse text-black pointer">
         <thead>
-          <tr className="bg-gray-200">
-            <th className="border border-gray-400 px-4 py-2">ID</th>
-            <th className="border border-gray-400 px-4 py-2">Name</th>
-            <th className="border border-gray-400 px-4 py-2">Email</th>
-            <th className="border border-gray-400 px-4 py-2">Graduation Year</th>
-            <th className="border border-gray-400 px-4 py-2">University</th>
-            <th className="border border-gray-400 px-4 py-2">Status</th>
-            <th className="border border-gray-400 px-4 py-2">Actions</th>
+          <tr className=" bg-gray-300 border-b-2 border-gray-400">
+            <th className="border-gray-400 pl-2 pr-3 md:p-4 md:w-full">ID</th>
+            <th className="border-gray-400 pl-2 pr-3 md:p-4 md:w-full">Name</th>
+            <th className="border-gray-400 pl-2 pr-3 md:p-4 md:w-full">Email</th>
+            <th className="border-gray-400 pl-2 pr-3 md:p-4 md:w-full">Graduation Year</th>
+            <th className="border-gray-400 pl-2 pr-3 md:p-4 md:w-full">Actions</th>
+            <th className="border-gray-400 pl-2 pr-3 md:p-4 md:w-full">University</th>
+            <th className="border-gray-400 pl-2 pr-3 md:p-4 md:w-full">Status</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className=' divide-y'>
           {portfolios.map(portfolio => (
-            <tr key={portfolio.id} className={portfolio.id === editId ? "" : "bg-gray-100"}>
-              <td className="border text-blue-500 underline border-gray-400 px-4 py-2">
+            <tr key={portfolio.id} className={portfolio.id === editId ? "bg-[#d8c9c9] text-sm text-gray-800" : "px-10 py-10 text-sm text-gray-800 bg-gray-100"}>
+              <td className=" text-blue-500 font-semibold hover:underline border-gray-400 px-4 py-2">
               <Link to={`/manage-portfolio/${portfolio.id}`}>
                 {portfolio.id}
                 </Link></td>
-              <td>
+              <td className='p-3 whitespace-nowrap'>
                 {portfolio.id === editId ? (
                   <React.Fragment>
-                    <input type='text' className="mb-1" placeholder="first name" value={updatedPortfolio.customer_first_name || portfolio.customer_first_name} name="customer_first_name" onChange={handleInputChange} />
-                    <input type='text' placeholder="last name" value={updatedPortfolio.customer_last_name || portfolio.customer_last_name} name="customer_last_name" onChange={handleInputChange} />
+                    <input  type='text' className="mb-2 pl-1" placeholder="first name" value={updatedPortfolio.customer_first_name || portfolio.customer_first_name} name="customer_first_name" onChange={handleInputChange} />
+                    <input className="pl-1" type='text' placeholder="last name" value={updatedPortfolio.customer_last_name || portfolio.customer_last_name} name="customer_last_name" onChange={handleInputChange} />
                   </React.Fragment>
                 ) : (
                   `${portfolio.customer_first_name} ${portfolio.customer_last_name}`
                 )}
               </td>
-              <td>
+              <td className="whitespace-nowrap pl-3 pr-3">
                 {portfolio.id === editId ? (
-                  <input type='text' placeholder='customer@email.com' value={updatedPortfolio.customer_email || portfolio.customer_email} name="customer_email" onChange={handleInputChange} />
+                  <input className="pl-1" type='text' placeholder='customer@email.com' value={updatedPortfolio.customer_email || portfolio.customer_email} name="customer_email" onChange={handleInputChange} />
                 ) : (
                   portfolio.customer_email
                 )}
               </td>
-              <td>
+              <td className='border-gray-400'>
                 {portfolio.id === editId ? (
-                  <input type='text' placeholder='2022' value={updatedPortfolio.graduation_year || portfolio.graduation_year} name="graduation_year" onChange={handleInputChange} />
+                  <input className="pl-1" type='text' placeholder='2022' value={updatedPortfolio.graduation_year || portfolio.graduation_year} name="graduation_year" onChange={handleInputChange} />
                 ) : (
                   portfolio.graduation_year
                 )}
               </td>
-              <td>
+              <td className="whitespace-nowrap pl-3 pr-3">
                 {portfolio.id === editId ? (
                   <select className=' mb-4 block text-sm py-3 px-3 rounded-3xl w-full border-r-8 border-transparent outline-none focus:ring focus:outline-none'
                   value={updatedPortfolio.university_id}
@@ -173,20 +175,22 @@ const getUniversityName = (id) => {
                   getUniversityName(portfolio.university_id)
                 )}
               </td>
-              <td>
+              <td  className="whitespace-nowrap">
+                <span className={`bg-opacity-50 rounded-2xl tracking-wider p-1.5 uppercase text-xs cursor-default ${portfolio.is_active ? "bg-green-500" : "bg-yellow-200"}`} >
                 {portfolio.id === editId ? (
                   <input type="checkbox" name="is_active" value={updatedPortfolio.is_active || portfolio.is_active} defaultChecked={updatedPortfolio.is_active || portfolio.is_active} onChange={handleInputChange} />
                 ) : (
                   portfolio.is_active ? 'Active' : 'Inactive'
                 )}
+                </span>
               </td>
-              <td>
+              <td className="pl-2.5 whitespace-nowrap">
                 {portfolio.id === editId ? (
-                  <button onClick={handleUpdate}>Update</button>
+                  <button className="hover:font-bold transition" onClick={handleUpdate}>Update</button>
                 ) : (
                   <React.Fragment>
-                    <button  className="bg-slate-400 mr-4" onClick={() => handleEdit(portfolio.id)}>Edit</button>
-                    <button className='mr-4' onClick={() => handleDelete(portfolio.id)}>Delete</button>
+                    <button  className="text-blue-500 hover:font-bold mr-4" onClick={() => handleEdit(portfolio.id)}>Edit</button>
+                    <button className='text-red-500 hover:font-bold mr-4' onClick={() => handleDelete(portfolio.id)}>Delete</button>
                   </React.Fragment>
                 )}
               </td>
@@ -195,6 +199,7 @@ const getUniversityName = (id) => {
         </tbody>
       </table>
     </div>
+    </>
   );
 };
 

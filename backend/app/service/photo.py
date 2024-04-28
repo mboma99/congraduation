@@ -8,6 +8,7 @@ from backend.app.config import db
 from backend.app.service.schema import PhotoSchema, PhotoResponse, PhotosResponse
 from backend.app.repository.photo import PhotoRepository
 from backend.app.repository.portfolio import PortfolioRepository
+from backend.app.repository.product_type import ProductTypeRepository
 from sqlalchemy import delete
 from botocore.exceptions import ClientError
 import boto3 
@@ -20,42 +21,95 @@ S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
 
 class PhotoService:
     
-    @staticmethod
-    async def get_photos(portfolio_id: str):
-        _portfolio = await PortfolioRepository.find_by_portfolio_id(portfolio_id)
-        if not _portfolio:
-            raise Exception("Portfolio not found.")
-        
-        __photos = await PhotoRepository.find_by_portfolio_id(portfolio_id)
-        photos = []
-
-        for photo in __photos:
-            photo_response = PhotoResponse(id=photo.id, image_url=photo.image_url)
-            photos.append(photo_response)
-
-        return PhotosResponse(photos=photos)
     
+    async def get_photos(portfolio_id: str):
+        _portfolio = await PortfolioRepository.get_by_id(portfolio_id)
+        if _portfolio:
+            #get all photos with match portfolio id 
+            _photos = await PhotoRepository.find_by_portfolio_id(portfolio_id)
+            photos = []
+            for photo in _photos:
+                _product_type = await ProductTypeRepository.get_by_id(photo.product_type_id)
+                if not _product_type:
+                    raise Exception("Product type not found.")
+                _price = _product_type.price
+                _photo_response = PhotoResponse(
+                id=photo.id,
+                portfolio_id=photo.portfolio_id,
+                image_url=photo.image_url,
+                price=_price,
+                stripe_id= _product_type.stripe_id
+                )
+                photos.append(_photo_response)
+            return {
+                'id': _portfolio.id,
+                'photographer_id': _portfolio.photographer_id,
+                'customer_first_name': _portfolio.customer_first_name,
+                'customer_last_name': _portfolio.customer_last_name,
+                'customer_email': _portfolio.customer_email,
+                'graduation_year': _portfolio.graduation_year,
+                'university_id': _portfolio.university_id,
+                'is_active': _portfolio.is_active,
+                'photos': photos
+            }
+        else:
+            raise HTTPException(status_code=404, detail="Portfolio not found")
+        
     @staticmethod
     async def get_photos_by_customer_email(email: str):
-        _portfolio = await PortfolioRepository.find_by_customer_email(email)
-        if not _portfolio:
+        __portfolio = await PortfolioRepository.find_by_customer_email(email)
+        if not __portfolio:
             raise Exception("Portfolio not found.")
-        _portfolio_id = _portfolio[0].id
-        __photos = await PhotoRepository.find_by_portfolio_id(_portfolio_id)
-        photos = []
-        
-        for photo in __photos:
-            photo_response = PhotoResponse(id=photo.id, image_url=photo.image_url)
-            photos.append(photo_response)
+        _portfolio= __portfolio[0]
+        if _portfolio:
+            #get all photos with match portfolio id 
+            _photos = await PhotoRepository.find_by_portfolio_id(_portfolio.id)
+            photos = []
+            for photo in _photos:
+                _product_type = await ProductTypeRepository.get_by_id(photo.product_type_id)
+                if not _product_type:
+                    raise Exception("Product type not found.")
+                _price = _product_type.price
+                _photo_response = PhotoResponse(
+                id=photo.id,
+                portfolio_id=photo.portfolio_id,
+                image_url=photo.image_url,
+                price=_price,
+                stripe_id= _product_type.stripe_id
+                )
+                photos.append(_photo_response)
+                
             
-        return PhotosResponse(photos=photos)
+            return {
+                'id': _portfolio.id,
+                'photographer_id': _portfolio.photographer_id,
+                'customer_first_name': _portfolio.customer_first_name,
+                'customer_last_name': _portfolio.customer_last_name,
+                'customer_email': _portfolio.customer_email,
+                'graduation_year': _portfolio.graduation_year,
+                'university_id': _portfolio.university_id,
+                'is_active': _portfolio.is_active,
+                'photos': photos
+            }
+        else:
+            raise HTTPException(status_code=404, detail="Portfolio not found")
 
     @staticmethod
     async def get_photo(photo_id: str):
         _photo = await PhotoRepository.get_by_id(photo_id)
         if not _photo:
             raise Exception("Photo not found.")
-        return _photo
+        _product_type = await ProductTypeRepository.get_by_id(_photo.product_type_id)
+        if not _product_type:
+            raise Exception("Product type not found.")
+        _price = _product_type.price
+        _photo_response = PhotoResponse(
+            id=_photo.id,
+            portfolio_id=_photo.portfolio_id,
+            image_url=_photo.image_url,
+            price=_price
+        )
+        return _photo_response
     
     @staticmethod
     async def create_photo(file: UploadFile, portfolio_id: str):
@@ -74,7 +128,8 @@ class PhotoService:
         _new_photo_data = Photo (
                 id=_photo_id,
                 portfolio_id=portfolio_id,
-                image_url=_file_url
+                image_url=_file_url,
+                product_type_id= "1"
             )
         await PhotoRepository.create(**_new_photo_data.dict())
 

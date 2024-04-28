@@ -9,7 +9,6 @@ import Popup from 'reactjs-popup';
 export const PhotographerAccount = () => {
   const [user, setUser] = useState({});
   const [token, setToken] = useState('');
-  const [portfolios, setPortfolios] = useState([]);
 
   useEffect(() => {
     // get token from local storage
@@ -34,11 +33,11 @@ export const PhotographerAccount = () => {
 
   return (
     <>
-      <div className="flex ml-5 min-h-screen justify-center items-start relative text-white pt-20">
+      <div className="md:flex md:ml-5 min-h-screen md:justify-center md:items-start md:relative text-white md:pt-20">
         <div>
           <div className=''>
-            <div className="w-full flex-row bg-[#D9D9D9] bg-opacity-40 p-5 rounded-3xl mb-4 flex-wrap">
-              <div className="flex-grow flex-shrink-0 w-1/2 md:w-auto md:flex-grow-0 md:flex-shrink-1 ">
+            <div className="md:w-full flex-row bg-[#D9D9D9] text-center bg-opacity-40 p-5 rounded-3xl mb-4">
+              <div className="flex-grow flex-shrink-0 md:w-auto md:flex-grow-0 md:flex-shrink-1 ">
                 <ul className="flex flex-col justify-evenly md:flex-row md:items-center">
                   <li className="font-semibold text-3xl">{user.first_name}</li>
                   <li className="font-semibold text-3xl">{user.last_name}</li>
@@ -46,7 +45,7 @@ export const PhotographerAccount = () => {
                   <li className="font-light text-xl">{user.phone_number}</li>
                   <li>
                     <Popup
-                      trigger={<button className=" text-[#69A9D7] uppercase text-center duration-200 text-xl cursor-pointer hover:text-white">update profile</button>}
+                      trigger={<button className=" text-[#69A9D7] uppercase md:text-center duration-200 text-xl cursor-pointer hover:text-white">update profile</button>}
                       modal
                       nested
                     >
@@ -63,8 +62,8 @@ export const PhotographerAccount = () => {
 
             </div>
 
-            <div className="flex">
-              <div className="text-center flex-row bg-[#D9D9D9] bg-opacity-40 p-5 rounded-3xl mb-10">
+            <div className="md:flex">
+              <div className="text-center flex-row bg-[#D9D9D9] bg-opacity-40 p-4 rounded-3xl mb-10">
                 {user && Object.keys(user).length > 0 && (
                   <PortfolioList photographer_id={`${user.id}`} />
                 )}

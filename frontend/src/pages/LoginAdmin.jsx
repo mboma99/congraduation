@@ -37,14 +37,14 @@ export const LoginAdmin = () => {
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();
-  
+
     // Email validation: Check if email is null
     if (loginForm.email === '') {
       setEmailErrorMessage('please enter an email');
       setIsEmailValid(false);
       return;
     }
-  
+
     if (
       loginForm.email !== '' &&
       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginForm.email)
@@ -56,18 +56,18 @@ export const LoginAdmin = () => {
       setIsEmailValid(true);
       setEmailErrorMessage('');
     }
-  
+
     // Password validation: Check if password is not null or empty
     const isValidPassword = loginForm.password.trim() !== '';
     setIsPasswordValid(isValidPassword);
-  
+
     if (!isValidPassword) {
       setPasswordErrorMessage('Password cannot be empty');
       return;
     } else {
       setPasswordErrorMessage('');
     }
-  
+
     // Call API for login
     try {
       const response = await axios.post(
@@ -75,7 +75,7 @@ export const LoginAdmin = () => {
         loginForm
       );
       console.log(response);
-  
+
       // Save token to local storage
       localStorage.setItem('auth_token', response.data.result.access_token);
       localStorage.setItem(
@@ -85,15 +85,22 @@ export const LoginAdmin = () => {
       const auth_token = localStorage.getItem('auth_token');
       const auth_token_type = localStorage.getItem('auth_token_type');
       const token = auth_token_type + ' ' + auth_token;
+      const tokenExpirationTime = 15 * 60 * 1000; // 15 minutes in milliseconds
+      setTimeout(() => {
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("auth_token_type");
+        localStorage.removeItem("user_type");
+        console.log("Token expired, local storage cleared.");
+      }, tokenExpirationTime);
       axios
         .get('http://localhost:8000/photographer/', {
           headers: { Authorization: token },
         })
         .then((response) => {
           localStorage.setItem('user_type', response.data.result.user_type);
-          const user  = response.data.result;
+          const user = response.data.result;
           console.log(response);
-  
+
           // Redirect to account-admin page if user exists
           window.location.href = `/account-admin/${user.id}&${(user.first_name).charAt(0)}&${user.last_name}`;
 
@@ -101,7 +108,7 @@ export const LoginAdmin = () => {
         })
         .catch((error) => {
           console.log(error);
-  
+
           // Handle email not found error (404)
           if (error.response.status === 404) {
             setEmailErrorMessage('Email not found');
@@ -114,7 +121,7 @@ export const LoginAdmin = () => {
       setLoginFailed(true);
     }
   };
-  
+
 
   return (
     <div className="flex justify-center min-h-screen items-start relative pt-20">
@@ -174,7 +181,7 @@ export const LoginAdmin = () => {
               </p>
             )}
           </div>
-          <Link to="/forgot-password">
+          <Link to="/forgot-password-admin">
             <p className="mt-3 text-[#9291E8] text-center duration-200 text-m cursor-pointer hover:text-white">
               Forgot password?
             </p>
@@ -182,12 +189,17 @@ export const LoginAdmin = () => {
           <p className="text-center pt-20 text-sm text-white font-normal">
             Don't have an account yet?{' '}
           </p>
-          <Link to="/register">
+          <Link to="/register-admin">
             <p className="text-[#9291E8] text-center duration-200 text-m cursor-pointer hover:text-white">
               Create one
             </p>
           </Link>
         </form>
+        <Link to="/login">
+          <p className=" mt-32 text-[#d5d4fa] text-center duration-200 text-m cursor-pointer hover:text-white">
+            login as customer
+          </p>
+        </Link>
       </div>
     </div>
   );

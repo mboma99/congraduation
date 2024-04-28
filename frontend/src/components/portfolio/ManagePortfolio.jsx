@@ -64,13 +64,13 @@ const ManagePortfolio = () => {
                 Authorization: token,
             },
         })
-        .then((response) => {
-            console.log(response);
-            setUploadSuccess(!uploadSuccess);
-        })
-        .catch((error) => {
-            console.error('Error deleting photo:', error);
-        });
+            .then((response) => {
+                console.log(response);
+                setUploadSuccess(!uploadSuccess);
+            })
+            .catch((error) => {
+                console.error('Error deleting photo:', error);
+            });
     };
 
     useEffect(() => {
@@ -91,10 +91,10 @@ const ManagePortfolio = () => {
 
     console.log(portfolio);
     return (
-        <div className='mr-20'>
+        <div className=''>
 
 
-            <div className='ml-5 w-full min-h-screen justify-center items-center relative text-white '>
+            <div className=' w-full min-h-screen justify-center items-center relative text-white '>
                 <Breadcrumb ml={1} >
                     <BreadcrumbItem>
                         <BreadcrumbLink as={Link} to="/account-admin/{}">Account</BreadcrumbLink>
@@ -104,9 +104,9 @@ const ManagePortfolio = () => {
                     </BreadcrumbItem>
                 </Breadcrumb>
                 {portfolio ? (
-                    <div className='w-full place-content-center bg-[#D9D9D9] bg-opacity-40 p-5 rounded-3xl mb-4 flex flex-col justify-center items-center'>
+                    <div className='w-full text-center bg-[#D9D9D9] bg-opacity-40 p-5 rounded-3xl mb-4'>
                         <h1 className='text-2xl font-semibold mb-4'>Portfolio Data</h1>
-                        <div className='w-full flex justify-evenly text-xl'>
+                        <div className='w-full md:flex justify-evenly text-xl'>
                             <p>{portfolio.customer_first_name} {portfolio.customer_last_name}</p>
                             <p>{portfolio.customer_email}</p>
                             <p>{getUniversityName(portfolio.university_id)}</p>
@@ -136,62 +136,62 @@ const ManagePortfolio = () => {
                     {
                         showSpinner && (
                             <Center>
-                                <Spinner size="2xl"></Spinner>
+                                <Spinner className='h-5'></Spinner>
                             </Center>
                         )
                     }
                 </HStack>
-                <SimpleGrid columns={4} spacing={10}>
-                    {allPhotos.map((photo, index) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 items-center">
+                    {Array.isArray(allPhotos) && allPhotos.map((photo, index) => (
                         <div key={index} className="relative group overflow-hidden">
-                            <Image
-                                borderRadius={25}
-                                boxSize={350}
-                                src={photo.image_url}
-                                fallback=''
-                                objectFit="cover"
-                                className="transition-opacity duration-300"
-                            />
+                                <Image
+                                    borderRadius={15}
+                                    src={photo.image_url}
+                                    fallback=''
+                                    objectFit="cover"
+                                    className="transition-opacity duration-300"
+                                />
 
-                            <div className="absolute space-x-3 inset-0 bg-gray-500 opacity-10 transition-opacity duration-300 group-hover:opacity-95 rounded-md flex items-center justify-center">
-                                <Popup
-                                    trigger={<button className='p-2  bg-slate-400 rounded-xl hover:bg-[#3577fb]'>DETAILS</button>}
-                                    modal
-                                    nested
-                                >
-                                    {(close) => (
-                                        <div className="p-8 bg-white rounded-md">
-                                            <p>Photo ID: {photo.id}</p>
-                                            <p>Photo URL: {photo.image_url}</p>
-                                            <div className="flex justify-center mt-4">
-                                                <button className="px-4 py-2 bg-gray-500 text-white rounded-md" onClick={close}>Close</button>
+                                <div className="absolute space-x-3 inset-0 bg-gray-500 opacity-10 transition-opacity duration-300 group-hover:opacity-95 rounded-md flex items-center justify-center">
+                                    <Popup
+                                        trigger={<button className='p-2  bg-slate-400 rounded-xl hover:bg-[#3577fb]'>DETAILS</button>}
+                                        modal
+                                        nested
+                                    >
+                                        {(close) => (
+                                            <div className="p-8 bg-white rounded-md">
+                                                <p>Photo ID: {photo.id}</p>
+                                                <p>Photo URL: {photo.image_url}</p>
+                                                <p>Price: {photo.price}</p>
+                                                <div className="flex justify-center mt-4">
+                                                    <button className="px-4 py-2 bg-gray-500 text-white rounded-md" onClick={close}>Close</button>
+                                                </div>
                                             </div>
-                                        </div>
-                                    )}
-                                </Popup>
-                                <Popup
-                                    trigger={<button className='p-2 bg-slate-400 rounded-xl hover:bg-red-500'>DELETE</button>}
-                                    modal
-                                    nested
-                                >
-                                    {(close) => (
-                                        <div className="p-8 bg-white rounded-md">
-                                            <p>Are you sure you want to delete this photo?</p>
-                                            <div className="flex justify-center mt-4">
-                                                <button className="mr-4 px-4 py-2 bg-red-500 text-white rounded-md" onClick={() => { deletePhoto(photo.id); close(); }}>Yes</button>
-                                                <button className="px-4 py-2 bg-gray-500 text-white rounded-md" onClick={close}>Cancel</button>
+                                        )}
+                                    </Popup>
+                                    <Popup
+                                        trigger={<button className='p-2 bg-slate-400 rounded-xl hover:bg-red-500'>DELETE</button>}
+                                        modal
+                                        nested
+                                    >
+                                        {(close) => (
+                                            <div className="p-8 bg-white rounded-md">
+                                                <p>Are you sure you want to delete this photo?</p>
+                                                <div className="flex justify-center mt-4">
+                                                    <button className="mr-4 px-4 py-2 bg-red-500 text-white rounded-md" onClick={() => { deletePhoto(photo.id); close(); }}>Yes</button>
+                                                    <button className="px-4 py-2 bg-gray-500 text-white rounded-md" onClick={close}>Cancel</button>
+                                                </div>
                                             </div>
-                                        </div>
-                                    )}
-                                </Popup>
+                                        )}
+                                    </Popup>
+                                </div>
                             </div>
-                        </div>
                     ))}
-                    <Divider />
-                </SimpleGrid>
+                            <Divider />
+                        </div>
             </div>
-        </div>
-    );
+            </div>
+            );
 };
 
-export default ManagePortfolio;
+            export default ManagePortfolio;

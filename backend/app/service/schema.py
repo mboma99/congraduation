@@ -24,6 +24,7 @@ class RegisterSchema(BaseModel):
     postcode: str = Field(None, example="LE1 7RH")
     city: str = Field(None, example="Leicester")
     phone_number: str = Field(None, example="+771234567890")
+    
 
     # phone number validation
     @validator("phone_number")
@@ -53,6 +54,7 @@ class RegisterPhotographerSchema(BaseModel):
     email: str = Field(None, example="john.doe@example.com")
     password: str = Field(None, example="password")
     phone_number: str = Field(None, example="+771234567890")
+    access_id: str = Field(None, example="1")
 
     # phone number validation
     @validator("phone_number")
@@ -82,6 +84,11 @@ class ForgotPasswordSchema(BaseModel):
     email: str = Field(None, example="john.doe@example.com")
     new_password: str = Field(None, example="password")
 
+class ForgotPasswordPhotographerSchema(BaseModel):
+    email: str = Field(None, example="john.doe@admin.com")
+    new_password: str = Field(None, example="password")
+    access_id: str = Field(None, example="1")
+    
 class PortfolioSchema(BaseModel):
     id: str = Field(None, example="1")
     photographer_id: str = Field(None, example="1")
@@ -94,13 +101,26 @@ class PortfolioSchema(BaseModel):
     created_at: Optional[datetime] = Field(None, example="2022-01-01T00:00:00")
     edited_at: Optional[datetime] = Field(None, example="2022-02-01T00:00:00")
 
+class CustomerDeleteSchema(BaseModel):
+    email: str = Field(None, example="john@dmu.ac.uk")
+    access_id: str = Field(None, example="1")
+    
+class PhotographerDeleteSchema(BaseModel):
+    email: str = Field(None, example="admin@admin.ac.uk")
+    password: str = Field(None, example="password")
+    
+class PorfoliomigrationSchema(BaseModel):
+    email: str = Field(None, example="admin@admin.ac.uk")
 
+    portfolio_migration_id: Optional[str] = Field(None, example="1")
     
     
 class PhotoSchema(BaseModel):
     id: str = Field(None, example="1")
     portfolio_id: str = Field(None, example="1")
     image_url: HttpUrl = Field(None, example="https://example.com/image.jpg")
+    price: float = Field(None, example=10.0)
+    stripe_id: str = Field(None, example="1")
     
 class PhotographerUpdateSchema(BaseModel):
     email: Optional[str] = Field(None, example="john.doe@example.com")
@@ -131,6 +151,8 @@ class PhotoResponse(BaseModel):
     id: str = Field(None, example="1")
     portfolio_id: str = Field(None, example="1")
     image_url: HttpUrl = Field(None, example="https://example.com/image.jpg") 
+    price: float = Field(None, example=10.0)
+    stripe_id: str = Field(None, example="1")
     
 class PhotosResponse(BaseModel):
     photos: Optional[list[PhotoResponse]] = Field(None, example=[{"id": "1", "portfolio_id": "1", "image_url": "https://example.com/image.jpg"}])

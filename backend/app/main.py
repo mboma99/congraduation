@@ -34,11 +34,13 @@ def init_app():
         await db.close()
 
     from backend.app.controller import authentication, customers, photographer, portfolio, photo
+    from backend.app.util import stripe
     temp_app.include_router(authentication.router)
     temp_app.include_router(customers.router)
     temp_app.include_router(photographer.router)
     temp_app.include_router(portfolio.router)
     temp_app.include_router(photo.router)
+    temp_app.include_router(stripe.router)
     return temp_app
 
 app = init_app()

@@ -10,15 +10,12 @@ export const Login = () => {
     email: '',
     password: '',
   });
-  const navigate = useNavigate();
-  const [user, setUser] = useState({});
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
-  const [loginFailed, setLoginFailed] = useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = useState('');
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const onChangeForm = (label, event) => {
     switch (label) {
@@ -70,32 +67,38 @@ export const Login = () => {
       const response = await axios.post("http://localhost:8000/auth/login", loginForm);
       console.log(response);
 
-      
+
       // Save token to local storage
       localStorage.setItem("auth_token", response.data.result.access_token);
       localStorage.setItem("auth_token_type", response.data.result.token_type);
       const auth_token = localStorage.getItem("auth_token");
       const auth_token_type = localStorage.getItem("auth_token_type");
       const token = auth_token_type + " " + auth_token;
+
+      const tokenExpirationTime = 15 * 60 * 1000; 
+      setTimeout(() => {
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("auth_token_type");
+        localStorage.removeItem("user_type");
+        console.log("Token expired, local storage cleared.");
+      }, tokenExpirationTime);
       axios
-      .get("http://localhost:8000/customer/", {
-        headers: { Authorization: token },
-      })
-      .then((response) => {
-        localStorage.setItem("user_type", response.data.result.user_type);
-        const user  = response.data.result;
-        console.log(response);
-  
-        // Redirect to account-admin page if user exists
-        window.location.href = `/account/${user.id}&${(user.first_name).charAt(0)}&${user.last_name}`;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        .get("http://localhost:8000/customer/", {
+          headers: { Authorization: token },
+        })
+        .then((response) => {
+          localStorage.setItem("user_type", response.data.result.user_type);
+          const user = response.data.result;
+          console.log(response);
+
+          // Redirect to account-admin page if user exists
+          window.location.href = `/account/${user.id}&${(user.first_name).charAt(0)}&${user.last_name}`;
+        })
+        .catch((error) => {
+          setError(error.response.data.detail);
+        });
     } catch (error) {
-      // Handle login failure
-      console.error(error);
-      setLoginFailed(true);
+      setError(error.response.data.detail);
     }
   };
 
@@ -118,13 +121,13 @@ export const Login = () => {
               }}
             />
             {emailErrorMessage && (
-              <p className="text-red-500 text-sm  mt-2 text-center">{emailErrorMessage}</p>
+              <p className="text-red-400  mt-2 text-center">{emailErrorMessage}</p>
             )}
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Password"
-                className={`block text-sm py-3 px-4 rounded-3xl w-full border text-center outline-none, focus:ring focus:outline-none ${isPasswordValid ? 'ring-[#DFC9C2]' : 'ring-red-500'}`}
+                className={`block text-sm py-3 px-4 rounded-3xl w-full border text-center outline-none, focus:ring focus:outline-none  ${isPasswordValid ? 'ring-[#DFC9C2]' : 'ring-red-500'}`}
                 onChange={(event) => {
                   onChangeForm('password', event);
                 }}
@@ -141,7 +144,7 @@ export const Login = () => {
               </span>
             </div>
             {passwordErrorMessage && (
-              <p className="text-red-500 text-sm mt-2 text-center">{passwordErrorMessage}</p>
+              <p className="text-red-400  mt-2 text-center">{passwordErrorMessage}</p>
             )}
           </div>
           <div className="text-center mt-6 text-white">
@@ -151,11 +154,7 @@ export const Login = () => {
             >
               Login
             </button>
-            {loginFailed && (
-              <p className="text-red-500 text-sm mt-2 text-center">
-                Login failed. Please check your credentials.
-              </p>
-            )}
+            <p className=' text-red-400 text-center mt-3'>{error} </p> 
           </div>
           <Link to="/forgot-password">
             <p className="mt-3 text-[#9291E8] text-center duration-200 text-m cursor-pointer hover:text-white">
@@ -171,6 +170,11 @@ export const Login = () => {
             </p>
           </Link>
         </form>
+        <Link to="/login-admin">
+          <p className=" mt-32 text-[#d5d4fa] text-center duration-200 text-m cursor-pointer hover:text-white">
+            login as admin
+          </p>
+        </Link>
       </div>
     </div>
   );

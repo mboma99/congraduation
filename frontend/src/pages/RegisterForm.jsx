@@ -7,6 +7,7 @@ import axios from 'axios';
 export const RegisterForm = () => {
     const [page, setPage] = useState(0);
     const FormTitles = ["Create Your Account", "Complete Profile"];
+    const [error, setError] = useState("");
     const [formData, setFormData] = useState({
         first_name: "",
         last_name: "",
@@ -33,12 +34,20 @@ export const RegisterForm = () => {
     } else {
         progressPercentage = (page / (FormTitles.length - 1)) * 100;
     }
+    const isValidForm = () => {
+        const { first_name, last_name, email, password, phone_number } = formData;
+        return first_name && last_name && email && password && phone_number;
+    };
 
     // sumbit form data to backend
     const onSubmitHandler = (event) => {
         event.preventDefault();
-        console.log(formData)
-        // post data to backend
+        
+        if (!isValidForm()) {
+            setError("Please fill in all required fields.");
+            return;
+        }
+
         axios
             .post("http://localhost:8000/auth/register", formData)
             .then((response) => {
@@ -47,7 +56,7 @@ export const RegisterForm = () => {
                 window.location.href = "/login";
             })
             .catch((error) => {
-                console.log(error);
+                setError(error.response.data.detail);
             });
     }
 
@@ -74,7 +83,8 @@ export const RegisterForm = () => {
                     </div>
                 </div>
                 {selectedPage()}
-                <div className='flex justify-center  justify-evenly z-auto mt-6'>
+                <p className=' text-red-400 text-center mt-3'>{error} </p> 
+                <div className='flex justify-center z-auto mt-6'>
                     {page > 0 && (
                         <div className='text-center text-white w-1/2 mr-10'>
                             <button
