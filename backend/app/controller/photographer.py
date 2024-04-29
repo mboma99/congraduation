@@ -1,6 +1,8 @@
+from typing import List
 from fastapi import APIRouter, Depends, Security
 from fastapi import HTTPException
-from backend.app.service.schema import ResponseSchema,PhotographerUpdateSchema, PersonProfileUpdate
+from backend.app.service.customers import CustomerService
+from backend.app.service.schema import CustomerProfileResponse, ResponseSchema,PhotographerUpdateSchema, PersonProfileUpdate
 from backend.app.repository.auth_repo import JWTBearer, JWTRepo
 from fastapi.security import HTTPAuthorizationCredentials
 from backend.app.service.photographer import PhotographerService
@@ -28,5 +30,3 @@ async def update_person_profile(request_body: dict, credentials: HTTPAuthorizati
     token = JWTRepo.extract_token(credentials)
     await PhotographerService.update_person_profile(token['email'], request_body)
     return ResponseSchema(detail="Successfully update data!")
-
-

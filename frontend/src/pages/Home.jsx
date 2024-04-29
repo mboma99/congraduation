@@ -64,7 +64,7 @@ export const Home = () => {
                     <p className='text-white uppercase mb-5'>Not Graduated yet?</p>
                     <Link to="/about" ><button type="submit" className="w-48 border h-16 py-3 px-4 uppercase font-normal bg-transparent transition duration-300 hover:bg-customDullBlue text-white rounded-full">find out more</button></Link>
                 </div>
-                <div className='invisible md:right-side md:w-1/2 md:translate-x-1 md:visible'>
+                <div className='hidden  md:right-side md:w-1/2 md:translate-x-1 sm:flex'>
                     <img src={GraduateImage} alt="Graduate" className='w-fit' />
                 </div>
             </div>

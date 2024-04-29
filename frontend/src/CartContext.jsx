@@ -21,8 +21,6 @@ export function CartProvider({children}) {
         }
     }, []);
 
-    
-
     function getProductQuantity(id) {
         const quantity = cartProducts.find(product => product.id === id)?.quantity;
         

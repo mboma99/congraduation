@@ -126,7 +126,7 @@ const getUniversityName = (id) => {
               <Link to={`/manage-portfolio/${portfolio.id}`}>
                 {portfolio.id}
                 </Link></td>
-              <td className='p-3 whitespace-nowrap'>
+              <td className='p-3 '>
                 {portfolio.id === editId ? (
                   <React.Fragment>
                     <input  type='text' className="mb-2 pl-1" placeholder="first name" value={updatedPortfolio.customer_first_name || portfolio.customer_first_name} name="customer_first_name" onChange={handleInputChange} />

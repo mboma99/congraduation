@@ -44,7 +44,7 @@ const FindPhotos = ({onClose}) => {
 
     return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-md">
-            <div className="bg-[#1B223C] p-8 font-outfit w-3/5 rounded-3xl">
+            <div className="bg-[#1B223C] p-8 font-outfit w-full ml-3 mr-3 md:w-3/5 rounded-3xl">
                 <div className="flex justify-end">
                     <button onClick={onClose} className="text-white hover:text-[#9291E8] duration-200">
                         <XMarkIcon className="h-5 w-5" />

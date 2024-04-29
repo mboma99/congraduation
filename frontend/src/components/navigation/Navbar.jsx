@@ -85,33 +85,38 @@ export const Navbar = () => {
     }
   };
 
-
-  // Function to toggle the mobile menu
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
   const checkout = async () => {
-    console.log(cart.items)
     try {
-      const stripe = await stripePromise;
-      const response = await axios.post('http://localhost:8000/stripe/checkout/', {
-        items: cart.items
-      });
-
-      if (response.data.id) {
-        const result = await stripe.redirectToCheckout({
-          sessionId: response.data.id,
+        const stripe = await stripePromise;
+        
+        axios.post('http://localhost:8000/stripe/checkout/', {
+            items: cart.items
+        })
+        .then(response => {
+            localStorage.setItem('Stripe_data',response)
+            localStorage.setItem('Products', JSON.stringify(cart.items));
+            // Handle response data
+            if (response && response.data) {
+                const result = stripe.redirectToCheckout({
+                    sessionId: response.data.id
+                });
+                
+                if (result.error) {
+                    console.error('Error during checkout:', result.error);
+                }
+            } else {
+                console.error('Invalid response:', response);
+            }
+        })
+        .catch(error => {
+            console.error('Error during checkout:', error);
         });
-
-        if (result.error) {
-          console.error('Error during checkout:', result.error);
-        }
-      }
     } catch (error) {
-      console.error('Error during checkout:', error);
+        console.error('Error during checkout:', error);
     }
-  };
+};
+
+
 
 
   return (

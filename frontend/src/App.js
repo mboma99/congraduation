@@ -17,7 +17,6 @@ import ForgotPasswordAdmin from './pages/ForgotPasswordAdmin';
 import RegisterFormAdmin from './pages/RegisterFormAdmin';
 
 import { Shop } from './pages/Shop';
-import { Cart } from './pages/Cart';
 import RegisterForm from './pages/RegisterForm';
 import ForgotPassword from './pages/ForgotPassword';
 import CustomerAccount from './components/customer/CustomerAccount';
@@ -64,7 +63,6 @@ function App() {
               <Route path='*' element= {<Home/>}/>
               <Route path="/about" element={<About />} />
               <Route path="/shop/:search_key" element={<Shop />} />
-              <Route path="/cart" element={<Cart />} />
                 <Route path="/account/:userId" element={
                   <NormalUser>
                     <CustomerAccount />

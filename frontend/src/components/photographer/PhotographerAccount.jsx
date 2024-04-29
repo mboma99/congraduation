@@ -4,6 +4,7 @@ import Logout from '../Logout';
 import UpdateAccount from './UpdatePhotographerAccount';
 import PortfolioList from '../portfolio/PortfolioList';
 import CreatePortfolio from '../portfolio/CreatePortfolio';
+import CustomerList from './CustomerList';  
 import Popup from 'reactjs-popup';
 
 export const PhotographerAccount = () => {
@@ -33,7 +34,7 @@ export const PhotographerAccount = () => {
 
   return (
     <>
-      <div className="md:flex md:ml-5 min-h-screen md:justify-center md:items-start md:relative text-white md:pt-20">
+      <div className="min-h-screen md:justify-center md:relative text-white md:pt-20">
         <div>
           <div className=''>
             <div className="md:w-full flex-row bg-[#D9D9D9] text-center bg-opacity-40 p-5 rounded-3xl mb-4">
@@ -62,7 +63,7 @@ export const PhotographerAccount = () => {
 
             </div>
 
-            <div className="md:flex">
+            <div className="">
               <div className="text-center flex-row bg-[#D9D9D9] bg-opacity-40 p-4 rounded-3xl mb-10">
                 {user && Object.keys(user).length > 0 && (
                   <PortfolioList photographer_id={`${user.id}`} />
@@ -82,6 +83,15 @@ export const PhotographerAccount = () => {
                   </Popup>
                 </div>
 
+              </div>
+            </div>
+
+            <div className="">
+              <div className="text-center flex-row bg-[#D9D9D9] bg-opacity-40 p-4 rounded-3xl mb-10">
+                {user && Object.keys(user).length > 0 && (
+                  <CustomerList photographer_id={`${user.id}`} />
+                )}
+                
               </div>
             </div>
           </div>

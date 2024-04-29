@@ -27,7 +27,7 @@ export default function logout() {
                 onClick={(event) => {
                     onClickHandler(event);
                 }}
-                className="duration-300 bg-[#364c78] hover:bg-customDullBlue hover:border-customDullBlue w-96 py-3 rounded-3xl mb-1"
+                className="duration-300 hover:bg-[#364c78] bg-customDullBlue hover:border-customDullBlue w-96 py-3 rounded-3xl mb-1"
             >
                 Log out
             </button>
