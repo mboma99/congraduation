@@ -28,7 +28,7 @@ class PortfolioService:
             if _portfolios:
                 return _portfolios       
             else:
-                raise HTTPException(status_code=404, detail="Photographer not found")
+                raise HTTPException(status_code=404, detail="Portfolios not found")
 
     @staticmethod
     async def update_portfolio(portfolio_id: str, new_data: dict):
@@ -63,7 +63,7 @@ class PortfolioService:
             if _email:
                 raise HTTPException(status_code=400, detail="Email already exists")
             #checking photographer exists
-            _photographer = await PhotographerRepository.find_by_photographer_id(photographer_id)
+            _photographer = await PhotographerRepository.get_by_id(photographer_id)
             if not _photographer:
                 raise HTTPException(status_code=404, detail="Photographer not found")
             else:

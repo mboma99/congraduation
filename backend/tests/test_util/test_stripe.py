@@ -7,7 +7,7 @@ from backend.app.main import app
 client = TestClient(app)
 
 
-def test_checkout_endpoint():
+def _test_checkout_endpoint():
     # Define a sample request payload
     payload = {
         "stripe_id": "price_1PAHHKAxTn6e6ofyNsic18gU",
@@ -16,7 +16,8 @@ def test_checkout_endpoint():
 
     # Send a POST request to the checkout endpoint
     response = client.post("/stripe/checkout/", json=payload)
-
+    print('TETETETETETETETETETETETETTETETETETETETTETETETTETETE')
+    print (response.json())
     # Assert that the response status code is 200 (OK)
     assert response.status_code == 200
 

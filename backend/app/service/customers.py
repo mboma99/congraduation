@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.future import select
 from backend.app.model import Customers, Person, Universities
 from backend.app.config import db
+from backend.app.repository.university import UniversityRepository
 from backend.app.service.schema import CustomerProfileResponse, PersonProfileUpdate
 from backend.app.repository.customer import CustomerRepository
 from backend.app.repository.person import PersonRepository
@@ -11,34 +12,27 @@ from backend.app.repository.person import PersonRepository
 class CustomerService:
 
     @staticmethod
-    async def get_customer_profile(email: str):
-        query = (
-            select(
-                Customers.id,
-                Customers.email,
-                Person.first_name,
-                Person.last_name,
-                Universities.university,
-                Customers.university_id,
-                Person.phone_number,
-                Customers.address,
-                Customers.postcode,
-                Customers.city
-            )
-            .join_from(Customers, Person)
-            .join_from(Customers, Universities, onclause=Customers.university_id == Universities.id)  # Join with Universities table
-            .where(Customers.email == email)
-        )
-
-        result = await db.execute(query)
-        customer_data = result.mappings().one()
-
-        # Convert the result to a dictionary
-        customer_dict = dict(customer_data)
-        customer_dict['user_type'] = 'customer'
-
-        # Return an instance of CustomerProfileResponse
-        return CustomerProfileResponse(**customer_dict)
+    async def get_customer(email: str):
+        customer = await CustomerRepository.find_by_email(email)
+        if not customer:
+            raise HTTPException(status_code=404, detail="Customer not found")
+        else:
+            person = await PersonRepository.get_by_id(customer.person_id)
+            university = await UniversityRepository.get_by_id(customer.university_id)
+            customer_dict = {
+                'id': customer.id,
+                'email': customer.email,
+                'first_name': person.first_name,
+                'last_name': person.last_name,
+                'university': university.university,
+                'university_id': customer.university_id,
+                'phone_number': person.phone_number,
+                'address': customer.address,
+                'postcode': customer.postcode,
+                'city': customer.city,
+                'user_type': 'customer'
+                }
+            return CustomerProfileResponse(**customer_dict)
     
     @staticmethod
     async def get_customer_id(id: str):
@@ -66,7 +60,7 @@ class CustomerService:
                 await PersonRepository.update(_person_id, **new_data)
         else:
             raise HTTPException(status_code=404, detail="Customer not found")
-    
+        
     @staticmethod
     async def get_all_customer_profile(email: str):
         query = (

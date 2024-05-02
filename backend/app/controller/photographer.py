@@ -16,7 +16,7 @@ router = APIRouter(
 @router.get("/", response_model=ResponseSchema, response_model_exclude_none=True)
 async def get_photographer_profile(credentials: HTTPAuthorizationCredentials = Security(JWTBearer())):
     token = JWTRepo.extract_token(credentials)
-    result = await PhotographerService.get_photographer_profile(token['email'])
+    result = await PhotographerService.get_photographer(token['email'])
     return ResponseSchema(detail="Successfully fetch data!", result=result)
 
 @router.put("/update_photographer_profile", response_model=ResponseSchema, response_model_exclude_none=True)
