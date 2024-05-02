@@ -1,6 +1,5 @@
-Sure, here it is with the actual `##`:
 
-```markdown
+
 ## Photo Graduation Web App
 
 This application is a photo graduation web app that uses a variety of technologies including S3, PostgreSQL, FastAPI, React.js, and Docker.
@@ -36,5 +35,5 @@ This application is a photo graduation web app that uses a variety of technologi
 8. **Run the application:** You can use Docker to run the application. In the root directory of the project, run docker-compose up.
 
 Please note that these are general steps and might vary depending on the specific setup of the photo graduation web app. Always refer to any specific documentation provided with the application for more detailed setup instructions.
-```
+
 
