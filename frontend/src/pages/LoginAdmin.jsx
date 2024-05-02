@@ -19,6 +19,7 @@ export const LoginAdmin = () => {
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const onChangeForm = (label, event) => {
     switch (label) {
@@ -108,17 +109,10 @@ export const LoginAdmin = () => {
         })
         .catch((error) => {
           console.log(error);
-
-          // Handle email not found error (404)
-          if (error.response.status === 404) {
-            setEmailErrorMessage('Email not found');
-            setIsEmailValid(false);
-          }
+          setError(error.response.data.detail);
         });
     } catch (error) {
-      // Handle login failure
-      console.error(error);
-      setLoginFailed(true);
+      setError(error.response.data.detail);
     }
   };
 
@@ -175,11 +169,7 @@ export const LoginAdmin = () => {
             >
               Login
             </button>
-            {loginFailed && (
-              <p className="text-red-500 text-sm mt-2 text-center">
-                Login failed. Please check your credentials.
-              </p>
-            )}
+            <p className=' text-red-400 text-center mt-3'>{error} </p> 
           </div>
           <Link to="/forgot-password-admin">
             <p className="mt-3 text-[#9291E8] text-center duration-200 text-m cursor-pointer hover:text-white">

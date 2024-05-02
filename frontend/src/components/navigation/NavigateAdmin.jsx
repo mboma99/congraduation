@@ -14,14 +14,16 @@ const NavigateAdmin = () => {
       .then((response) => {
         localStorage.setItem('user_type', response.data.result.user_type);
         const user = response.data.result;
-        console.log(response);
+
 
         // Redirect to account-admin page if user exists
         window.location.href = `/account-admin/${user.id}&${user.first_name.charAt(0)}&${user.last_name}`;
       })
       .catch((error) => {
         console.error('Error:', error);
-        // Handle error or redirect to login page
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('auth_token_type');
+        localStorage.removeItem('user_type');
       });
   }, []);
 
