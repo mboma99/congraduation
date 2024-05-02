@@ -21,7 +21,7 @@ S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
 
 class PhotoService:
     
-    
+    @staticmethod
     async def get_photos(portfolio_id: str):
         _portfolio = await PortfolioRepository.get_by_id(portfolio_id)
         if _portfolio:
@@ -59,7 +59,7 @@ class PhotoService:
     async def get_photos_by_customer_email(email: str):
         __portfolio = await PortfolioRepository.find_by_customer_email(email)
         if not __portfolio:
-            raise Exception("Portfolio not found.")
+            raise HTTPException(status_code=404, detail="Portfolio not found.")
         _portfolio= __portfolio[0]
         if _portfolio:
             #get all photos with match portfolio id 
@@ -68,7 +68,7 @@ class PhotoService:
             for photo in _photos:
                 _product_type = await ProductTypeRepository.get_by_id(photo.product_type_id)
                 if not _product_type:
-                    raise Exception("Product type not found.")
+                    raise HTTPException(status_code=404, detail="Product not found.")
                 _price = _product_type.price
                 _photo_response = PhotoResponse(
                 id=photo.id,
@@ -98,10 +98,10 @@ class PhotoService:
     async def get_photo(photo_id: str):
         _photo = await PhotoRepository.get_by_id(photo_id)
         if not _photo:
-            raise Exception("Photo not found.")
+            raise HTTPException(status_code=404, detail="Photo not found.")
         _product_type = await ProductTypeRepository.get_by_id(_photo.product_type_id)
         if not _product_type:
-            raise Exception("Product type not found.")
+            raise HTTPException(status_code=404, detail="Product not found.")
         _price = _product_type.price
         _photo_response = PhotoResponse(
             id=_photo.id,
@@ -163,14 +163,11 @@ class PhotoService:
             raise Exception("Photo not found.")
         
         _portfolio = await PortfolioRepository.get_by_id(portfolio_id)
-        print ('WE GOT HERE porfolio made ')
         if not _portfolio:
             raise HTTPException(status_code=404, detail="Portfolio not found")
-        print ('WE GOT HERE  porfolio not empty')
-        # Check if portfolio is active
+        if _portfolio.is_active:
+            raise HTTPException(status_code=400, detail="Portfolio is active cannot delete photo")
         try:
-            # Delete photo from S3 bucket
-            print ('WE GOT HERE ')
             s3 = boto3.resource('s3')
             bucket = s3.Bucket(S3_BUCKET_NAME)
             key = f"{portfolio_id}/{photo_id}"

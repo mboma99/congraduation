@@ -6,8 +6,10 @@ import UniversitySelect from '../UniversitySelect';
 const PortfolioList = ({ photographer_id }) => {
   const [portfolios, setPortfolios] = useState([]);
   const [error, setError] = useState(null);
+  const [errorResponse, setErrorResponse] = useState(null);
   const [editId, setEditID] = useState('');
   const [updatedPortfolio, setUpdatedPortfolio] = useState({});
+  
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -48,8 +50,7 @@ const getUniversityName = (id) => {
         setPortfolios(response.data.result);
       })
       .catch((error) => {
-        console.error('Error fetching portfolios:', error);
-        setError('Error: Portfolios not found for the specified photographer.');
+        setError(error.response.data.detail);
       });
   }, []);
 
@@ -99,13 +100,14 @@ const getUniversityName = (id) => {
           window.location.reload();
         })
         .catch((error) => {
-          console.log(error);
+          setErrorResponse(error.response.data.detail);
         });
     }
   };
 
   return (
     <><h2 className='font-semibold text-xl md:text-3xl uppercase'> Manage Portfolios</h2>
+    <p className=' text-red-400 text-center mt-3'>{errorResponse} </p> 
     <div className="overflow-auto rounded-xl mt-5">
       <table className="border-collapse text-black pointer">
         <thead>
@@ -126,7 +128,7 @@ const getUniversityName = (id) => {
               <Link to={`/manage-portfolio/${portfolio.id}`}>
                 {portfolio.id}
                 </Link></td>
-              <td className='p-3 whitespace-nowrap'>
+              <td className='p-3 '>
                 {portfolio.id === editId ? (
                   <React.Fragment>
                     <input  type='text' className="mb-2 pl-1" placeholder="first name" value={updatedPortfolio.customer_first_name || portfolio.customer_first_name} name="customer_first_name" onChange={handleInputChange} />

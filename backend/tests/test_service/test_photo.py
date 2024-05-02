@@ -1,70 +1,146 @@
-import pytest
-from unittest.mock import AsyncMock, MagicMock
 from fastapi import HTTPException
-from botocore.exceptions import ClientError
-from backend.app.service.photo import PhotoService
-
-# Mock dependencies
+import pytest
+from unittest.mock import MagicMock, AsyncMock
+from backend.app.model.photo import Photo
 from backend.app.repository.photo import PhotoRepository
 from backend.app.repository.portfolio import PortfolioRepository
+from backend.app.repository.photo import PhotoRepository
 from backend.app.repository.product_type import ProductTypeRepository
+from botocore.exceptions import BotoCoreError
+from backend.app.service.photo import PhotoService
+from backend.app.service.schema import PhotoResponse
+from moto import mock_aws
 
 @pytest.fixture
-def photo_service():
-    return PhotoService()
+def mock_portfolio():
+    return MagicMock(
+        id="portfolio_id",
+        photographer_id="photographer_id",
+        customer_first_name="John",
+        customer_last_name="Doe",
+        customer_email="john@example.com",
+        graduation_year=2024,
+        university_id="university_id",
+        is_active=True
+    )
+
+@pytest.fixture
+def mock_photo():
+    return MagicMock(
+        id="photo_id",
+        portfolio_id="portfolio_id",
+        image_url="https://example.com/photo.jpg",
+        product_type_id="product_type_id"
+    )
+
+@pytest.fixture
+def mock_product_type():
+    return MagicMock(
+        price=10.0,
+        stripe_id="stripe_id"
+    )
+
+@pytest.fixture
+def mock_file():
+    return MagicMock(filename="test_photo.jpg", file=MagicMock())
 
 @pytest.mark.asyncio
-async def test_get_photos():
-    portfolio_id = "portfolio_id"
-    mock_portfolio = MagicMock()
-    mock_portfolio.id = portfolio_id
-    mock_portfolio.photographer_id = "photographer_id"
-    mock_portfolio.customer_first_name = "John"
-    mock_portfolio.customer_last_name = "Doe"
-    mock_portfolio.customer_email = "john@example.com"
-    mock_portfolio.graduation_year = 2024
-    mock_portfolio.university_id = "university_id"
-    mock_portfolio.is_active = True
-
-    mock_photos = [
-        {"id": "photo_id_1", "image_url": "photo_url_1", "price": 10, "stripe_id": "stripe_id_1"},
-        {"id": "photo_id_2", "image_url": "photo_url_2", "price": 20, "stripe_id": "stripe_id_2"}
-    ]
-
+async def test_get_photos_existing_portfolio(mock_portfolio, mock_photo, mock_product_type):
     PortfolioRepository.get_by_id = AsyncMock(return_value=mock_portfolio)
-    PhotoRepository.find_by_portfolio_id = AsyncMock(return_value=mock_photos)
-    ProductTypeRepository.get_by_id = AsyncMock(return_value={"price": 30, "stripe_id": "stripe_id_3"})
+    PhotoRepository.find_by_portfolio_id = AsyncMock(return_value=[mock_photo])
+    ProductTypeRepository.get_by_id = AsyncMock(return_value=mock_product_type)
 
-    service = PhotoService()
-    result = await service.get_photos(portfolio_id)
+    result = await PhotoService.get_photos("portfolio_id")
 
-    assert result['id'] == portfolio_id
-    assert len(result['photos']) == 2
+    assert result['id'] == mock_portfolio.id
+    assert result['photos'][0].id == mock_photo.id
+    assert result['photos'][0].price == mock_product_type.price  
+    assert result['photos'][0].stripe_id == mock_product_type.stripe_id 
 
 @pytest.mark.asyncio
-async def test_get_photos_by_customer_email():
-    # Similar setup as above, but mock the repository method `find_by_customer_email`
-    pass  # Implement this test similarly to test_get_photos()
+async def test_get_photos_missing_portfolio():
+    PortfolioRepository.get_by_id = AsyncMock(return_value=None)
 
-# Write similar tests for other methods in PhotoService class
-# Mock dependencies appropriately for each test
+    with pytest.raises(HTTPException) as exc_info:
+        await PhotoService.get_photos("non_existent_portfolio_id")
 
-# Example test for create_photo
+    assert exc_info.value.status_code == 404
+
 @pytest.mark.asyncio
-async def test_create_photo():
-    portfolio_id = "portfolio_id"
-    mock_portfolio = MagicMock()
-    mock_portfolio.id = portfolio_id
+async def test_get_photo_existing_photo(mock_photo, mock_product_type):
+    PhotoRepository.get_by_id = AsyncMock(return_value=mock_photo)
+    ProductTypeRepository.get_by_id = AsyncMock(return_value=mock_product_type)
 
-    upload_file_mock = MagicMock()
-    upload_file_mock.filename = "test.jpg"
-    upload_file_mock.file = MagicMock()
+    result = await PhotoService.get_photo("photo_id")
 
+    assert result.id== mock_photo.id
+    assert result.portfolio_id == mock_photo.portfolio_id
+    assert str(result.image_url) == mock_photo.image_url
+    assert result.price == mock_product_type.price
+
+@pytest.mark.asyncio
+async def test_get_photo_missing_photo():
+    PhotoRepository.get_by_id = AsyncMock(return_value=None)
+
+    with pytest.raises(HTTPException) as exc_info:
+        await PhotoService.get_photo("non_existent_photo_id")
+
+    assert exc_info.value.status_code == 404
+    
+@pytest.mark.asyncio
+async def test_get_photos_by_customer_email_existing_portfolio(mock_portfolio, mock_photo, mock_product_type):
+    PortfolioRepository.find_by_customer_email = AsyncMock(return_value=[mock_portfolio])
+    PhotoRepository.find_by_portfolio_id = AsyncMock(return_value=[mock_photo])
+    ProductTypeRepository.get_by_id = AsyncMock(return_value=mock_product_type)
+
+    result = await PhotoService.get_photos_by_customer_email("john@example.com")
+    
+    assert result['id'] == mock_portfolio.id
+    assert result['photos'][0].id == mock_photo.id
+    assert result['photos'][0].price == mock_product_type.price
+    assert result['photos'][0].stripe_id == mock_product_type.stripe_id
+
+@pytest.mark.asyncio
+async def test_create_photo_portfolio_not_found(mock_portfolio, mock_file):
+    PortfolioRepository.find_by_portfolio_id = AsyncMock(return_value=None)
+
+    with pytest.raises(Exception) as exc_info:
+        await PhotoService.create_photo(mock_file, "portfolio_id")
+
+    assert str(exc_info.value) == "Portfolio not found."
+
+@pytest.mark.asyncio
+async def test_create_photo_upload_failure(mock_file, monkeypatch):
+    PortfolioRepository.find_by_portfolio_id = AsyncMock(return_value=None)
+
+    async def raise_boto_error(*args, **kwargs):
+        raise BotoCoreError("Upload failed")
+
+    monkeypatch.setattr(
+        'backend.app.service.photo.boto3.resource',
+        AsyncMock(side_effect=raise_boto_error)
+    )
+
+    with pytest.raises(HTTPException) as exc_info:
+        await PhotoService.create_photo(mock_file, "portfolio_id")
+
+    assert str(exc_info.value) == "Failed to upload photo: Upload failed"
+
+    PortfolioRepository.find_by_portfolio_id.assert_called_once_with("portfolio_id")
+    assert not PhotoRepository.create.called
+
+@pytest.mark.asyncio
+async def _test_create_photo_success(mock_portfolio, mock_file, monkeypatch):
     PortfolioRepository.find_by_portfolio_id = AsyncMock(return_value=mock_portfolio)
 
-    service = PhotoService()
-    with pytest.raises(Exception):
-        await service.create_photo(upload_file_mock, portfolio_id)
+    monkeypatch.setattr(
+        'backend.app.service.photo.boto3.resource',
+        MagicMock().Bucket().upload_fileobj
+    )
 
-# Write similar tests for other methods in PhotoService class
-# Mock dependencies appropriately for each test
+    result = await PhotoService.create_photo(mock_file, "portfolio_id")
+
+    assert isinstance(result, Photo)
+    assert result.portfolio_id == "portfolio_id"
+    assert result.image_url.startswith("https://")
+    assert result.product_type_id == "1"

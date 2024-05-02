@@ -1,68 +1,45 @@
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.future import select
 from backend.app.model import Photographer, Person,Portfolio
 from backend.app.config import db
+from backend.app.repository.photographer import PhotographerRepository
+from backend.app.repository.person import PersonRepository
 from backend.app.service.schema import PhotographerProfileResponse, PhotographerUpdateSchema,PersonProfileUpdate
 
 class PhotographerService:
+    @staticmethod
+    async def get_photographer(email:str):
+        _photographer = await PhotographerRepository.find_by_email(email)
+        if _photographer:
+            _profile = await PersonRepository.get_by_id(_photographer.person_id)
+            _photographer_dict = {
+                'id': _photographer.id,
+                'email': _photographer.email,
+                'first_name': _profile.first_name,
+                'last_name': _profile.last_name,
+                'phone_number': _profile.phone_number,
+                'user_type': 'photographer'
+            }
+            return PhotographerProfileResponse(**_photographer_dict) 
+        raise HTTPException(status_code=404, detail="Photographer not found")        
     
     @staticmethod
-    async def get_photographer_profile(email: str):
-        query = (
-            select(
-                Photographer.id,
-                Person.id,
-                Photographer.email,
-                Person.first_name,
-                Person.last_name,
-                Person.phone_number
-            )
-            .join_from(Photographer, Person)
-            .where(Photographer.email == email)
-        )
+    async def update_photographer_profile(email: str, new_data: PhotographerUpdateSchema):
+        _photographer = await PhotographerRepository.find_by_email(email)
+        if _photographer:
+            await PhotographerRepository.update(_photographer.id, email=new_data.email)
+            return {"status": "success", "message": "Photographer profile updated successfully"}
+        else:
+            raise HTTPException(status_code=404, detail="Photographer not found")
 
-        result = await db.execute(query)
-        photographer_data = result.mappings().one()
-
-        # Convert the result to a dictionary
-        photographer_dict = dict(photographer_data)
-        photographer_dict['user_type'] = 'photographer'
-
-        # Return an instance of CustomerProfileResponse
-        return PhotographerProfileResponse(**photographer_dict)
-    
-    @staticmethod
-    async def update_photographer_profile(email: str, new_data: dict):
-        query = (
-            select(Photographer)
-            .join_from(Photographer, Person)
-            .where(Photographer.email == email)
-        )
-
-        result = await db.execute(query)
-        photographer = result.scalars().one()
-        ## Update the photographer data
-        if new_data.email is not None:
-            photographer.email = new_data.email
-        
-        # Commit the changes
-        await db.commit()
-    
     @staticmethod
     async def update_person_profile(email: str, new_data: dict):
-        query = (
-            select(Person)
-            .join_from(Person, Photographer)
-            .where(Photographer.email == email)
-        )
-
+        _photographer = await PhotographerRepository.find_by_email(email)
+        if _photographer:
+            _profile = await PersonRepository.get_by_id(_photographer.person_id)
+            await PersonRepository.update(_profile.id, **new_data)
+            return {"status": "success", "message": "Photographer profile updated successfully"}
+        else:
+            raise HTTPException(status_code=404, detail="Photographer not found")
         
-        result = await db.execute(query)
-        person = result.scalars().one()
-
-        # Update the customer data
-        for key, value in new_data.items():
-            setattr(person, key, value)
-
-        # Commit the changes
-        await db.commit()
