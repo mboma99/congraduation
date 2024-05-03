@@ -40,9 +40,7 @@ it should be like this `wkdir\congraduation`.
    ```
 
 4. Install backend requirements
-   ```
-  pip install -r requirements.txt
-  ```
+  
 5. some times the install wont work depending on your deivice, commobn trtouble shooting method is
   ```
   pip install --force-reinstall -r requirements.txt   
