@@ -39,55 +39,57 @@ it should be like this `wkdir\congraduation`.
    venv\Scripts\Activate
    ```
 
-6. Install backend requirements
+4. Install backend requirements
    ```
   pip install -r requirements.txt
   ```
-some times the install wont work depending on your deivice, commobn trtouble shooting method is
-```
-pip install --force-reinstall -r requirements.txt   
-```
-7. create a new terminal tab and cd to frontedn folder  `wkdir\congraduation\frontend`
-```
-cd frontend
-```
-now  its time to install node and its packages. fFirstly going to a specific version of node 
-
-```
-npm install -g node@10.3.0
- 
-npm install
-```
+5. some times the install wont work depending on your deivice, commobn trtouble shooting method is
+  ```
+  pip install --force-reinstall -r requirements.txt   
+  ```
+6. create a new terminal tab and cd to frontedn folder  `wkdir\congraduation\frontend`
+  ```
+  cd frontend
+  ```
+  now  its time to install node and its packages. fFirstly going to a specific version of node 
+  ```
+  npm install -g node@10.3.0
+   
+  npm install
+  ```
 
 ## Setting up docker
 launch you dokcer desktop app as an admin, we'll get back to it later 
 
 1. firstly go back to you project directory in terminal this `wkdir\congraduation`
+
 2. get the latest postgres image
-```
-docker pull postgres
-```
+    ```
+    docker pull postgres
+    ```
 2. create a container based of that image and call it congraduationdb.
- ```
-docker run --name congraduationdb -e POSTGRES_PASSWORD=P2421444 -p 5432:5432 -d postgres
-  ```
+     ```
+    docker run --name congraduationdb -e POSTGRES_PASSWORD=P2421444 -p 5432:5432 -d postgres
+    ```
 3. now the container has been created go to the docker desktop app, run ththe newly creasted container and go back to the terminal, its time to import the data.
-```
-cat backend/app/db/dump_2024-05-02_20_45_53.sql | docker exec -i congraduationdb psql -U postgres -d postgres
-```
+  ```
+  cat backend/app/db/dump_2024-05-02_20_45_53.sql | docker exec -i congraduationdb psql -U postgres -d postgres
+  ```
 this will upload the data to docker.
 
 ## RUN THE APP
 now its time to run the app !
 In your project directory `wkdir\congraduation`
 
-```
-uvicorn backend.app.main:app --host localhost --port 8000
-```
+  ```
+  uvicorn backend.app.main:app --host localhost --port 8000
+  ```
 in other the other terminal  `wkdir\congraduation\frontend`
-use ``` 
+use
+ ``` 
 npm start dev
-``` to start the front end
+```
+to start the front end
 
 
 #misc
