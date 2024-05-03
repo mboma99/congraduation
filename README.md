@@ -35,10 +35,15 @@ it should be like this `wkdir\congraduation`.
    ```
 
 4. Activate the virtual enviroment
-   ``` [venv\Scripts\Activate ]```
+   ```
+   venv\Scripts\Activate
+   ```
 
-5. Install backend requirements
-   ``` 
+6. Install backend requirements
+   ```
+   install requirements
+  '''
+   
 and install the necessary dependencies. For the backend, you might need to create a virtual environment and install the dependencies listed in the requirements.txt file. For the frontend, navigate to the frontend directory and run npm install.
   
 8. **Environment variables:** Set up necessary environment variables. This includes database credentials, S3 credentials, and any other necessary variables.
