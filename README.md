@@ -48,7 +48,8 @@ some times the install wont work depending on your deivice, commobn trtouble sho
 pip install --force-reinstall -r requirements.txt   
 ```
 7. create a new terminal tab and cd to frontedn folder  `wkdir\congraduation\frontend`
-```cd frontend
+```
+cd frontend
 ```
 now  its time to install node and its packages. fFirstly going to a specific version of node 
 
