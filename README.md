@@ -2,7 +2,7 @@
 
 This application is a photo graduation web app that uses a variety of technologies including S3, PostgreSQL, FastAPI, React.js, and Docker. 
 
-This wiul;l be a step by step guide in how to run this application
+This will be a step by step guide in how to run this application
 
 ## Software Requirements
   
