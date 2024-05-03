@@ -3,7 +3,7 @@ from datetime import datetime
 from fastapi import HTTPException
 import logging
 import re
-from typing import TypeVar, Optional
+from typing import TypeVar, Optional, List
 
 from pydantic import BaseModel, validator, ValidationError, Field, HttpUrl
 from sqlalchemy import false
@@ -155,7 +155,7 @@ class PhotoResponse(BaseModel):
     stripe_id: str = Field(None, example="1")
     
 class PhotosResponse(BaseModel):
-    photos: Optional[list[PhotoResponse]] = Field(None, example=[{"id": "1", "portfolio_id": "1", "image_url": "https://example.com/image.jpg"}])
+    photos: Optional[List[PhotoResponse]] = Field(None, example=[{"id": "1", "portfolio_id": "1", "image_url": "https://example.com/image.jpg"}])
          
 class CustomerProfileResponse(BaseModel):
     id: str = Field(None, example="1")
@@ -176,7 +176,7 @@ class PhotographerProfileResponse(BaseModel):
     first_name: str = Field(None, example="John")
     last_name: str = Field(None, example="Doe")
     phone_number: str = Field(None, example="+771234567890")
-    portfolios: Optional[list] = Field(None, example=[{"uuid": "1", "portfolio_uuid": "1", "image_url": "https://example.com/image.jpg"}]) 
+    portfolios: Optional[List] = Field(None, example=[{"uuid": "1", "portfolio_uuid": "1", "image_url": "https://example.com/image.jpg"}]) 
     user_type: str
     
 class PortfolioResponse(BaseModel):
@@ -188,7 +188,7 @@ class PortfolioResponse(BaseModel):
     university_id: str = Field(None, example="1")
     graduation_year: int = Field(None, example=2022)
     is_active: bool = Field(None, example=True)
-    photos: Optional[list[PhotoResponse]] = Field(None, example=[{"id": "1", "portfolio_id": "1", "image_url": "https://example.com/image.jpg"}])
+    photos: Optional[List[PhotoResponse]] = Field(None, example=[{"id": "1", "portfolio_id": "1", "image_url": "https://example.com/image.jpg"}])
     created_at: Optional[datetime] = Field(None, example="2022-01-01T00:00:00")
     edited_at: Optional[datetime] = Field(None, example="2022-02-01T00:00:00")
     
