@@ -30,7 +30,7 @@ This will be a step by step guide in how to run this application
 it should be like this `wkdir\congraduation`.
 
 2. create virtual enviroment within python 3.9.6
-   ``` [python -m venv venv ]```
+   ``` {python -m venv venv }```
 
 3. Activate the virtual enviroment
    ``` [venv\Scripts\Activate ]```
