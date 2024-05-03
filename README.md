@@ -34,7 +34,7 @@ it should be like this `wkdir\congraduation`.
    python -m venv venv
    ```
 
-4. Activate the virtual enviroment
+3. Activate the virtual enviroment
    ```
    venv\Scripts\Activate
    ```
@@ -70,16 +70,16 @@ docker pull postgres
 2. create a container based of that image and call it congraduationdb.
  ```
 docker run --name congraduationdb -e POSTGRES_PASSWORD=P2421444 -p 5432:5432 -d postgres
-   ```
+  ```
 3. now the container has been created go to the docker desktop app, run ththe newly creasted container and go back to the terminal, its time to import the data.
-4. ```
-   cat backend/app/db/dump_2024-05-02_20_45_53.sql | docker exec -i congraduationdb psql -U postgres -d postgres
-   ```
+```
+cat backend/app/db/dump_2024-05-02_20_45_53.sql | docker exec -i congraduationdb psql -U postgres -d postgres
+```
 this will upload the data to docker.
 
 ## RUN THE APP
 now its time to run the app !
-In your project directory   `wkdir\congraduation`
+In your project directory `wkdir\congraduation`
 
 ```
 uvicorn backend.app.main:app --host localhost --port 8000
