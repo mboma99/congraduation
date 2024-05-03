@@ -24,11 +24,16 @@ This will be a step by step guide in how to run this application
 
 4. **IDE Selection** Select IDE, recommend to you install vscode [https://code.visualstudio.com/download], but IDE of choice is also welcomed.
 
-#Install dependencies:
+# Install dependencies:
 
 1. Navigate to the project directory.
 it should be like this `wkdir\congraduation`.
 
+2. create virtual enviroment within python 3.9.6
+   `python -m venv venv`
+
+3. Activate the virtual enviroment
+   `venv\Scripts\Activate`
 and install the necessary dependencies. For the backend, you might need to create a virtual environment and install the dependencies listed in the requirements.txt file. For the frontend, navigate to the frontend directory and run npm install.
   
 8. **Environment variables:** Set up necessary environment variables. This includes database credentials, S3 credentials, and any other necessary variables.
@@ -64,9 +69,6 @@ psql -U postgres
 \dt;
 
 
-
-python -m venv venv
-venv\Scripts\Activate
 
  if you get permission error, use this line 
  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
