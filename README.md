@@ -41,62 +41,76 @@ it should be like this `wkdir\congraduation`.
 
 6. Install backend requirements
    ```
-   install requirements
-  '''
-   
-and install the necessary dependencies. For the backend, you might need to create a virtual environment and install the dependencies listed in the requirements.txt file. For the frontend, navigate to the frontend directory and run npm install.
-  
-8. **Environment variables:** Set up necessary environment variables. This includes database credentials, S3 credentials, and any other necessary variables.
-  
-9. **Run the application:** You can use Docker to run the application. In the root directory of the project, run docker-compose up.
+  pip install -r requirements.txt
+  ```
+some times the install wont work depending on your deivice, commobn trtouble shooting method is
+```
+pip install --force-reinstall -r requirements.txt   
+```
+7. create a new terminal tab and cd to frontedn folder  `wkdir\congraduation\frontend`
+```cd frontend
+```
+now  its time to install node and its packages. fFirstly going to a specific version of node 
 
-Please note that these are general steps and might vary depending on the specific setup of the photo graduation web app. Always refer to any specific documentation provided with the application for more detailed setup instructions.
+```
+npm install -g node@10.3.0
+ 
+npm install
+```
 
+## Setting up docker
+launch you dokcer desktop app as an admin, we'll get back to it later 
 
-How to create the docker enviroment
-
-once you have imported you git repo
-in your ide terminal ensure your working dir is your [filespa]/congradution>
-gte the latest postgres image
+1. firstly go back to you project directory in terminal this `wkdir\congraduation`
+2. get the latest postgres image
+```
 docker pull postgres
-
-create docker container 
+```
+2. create a container based of that image and call it congraduationdb.
+ ```
 docker run --name congraduationdb -e POSTGRES_PASSWORD=P2421444 -p 5432:5432 -d postgres
+   ```
+3. now the container has been created go to the docker desktop app, run ththe newly creasted container and go back to the terminal, its time to import the data.
+4. ```
+   cat backend/app/db/dump_2024-05-02_20_45_53.sql | docker exec -i congraduationdb psql -U postgres -d postgres
+   ```
+this will upload the data to docker.
+
+## RUN THE APP
+now its time to run the app !
+In your project directory   `wkdir\congraduation`
+
+```
+uvicorn backend.app.main:app --host localhost --port 8000
+```
+in other the other terminal  `wkdir\congraduation\frontend`
+use ``` 
+npm start dev
+``` to start the front end
 
 
-copy the database over 
-cat backend/app/db/dump_2024-05-02_20_45_53.sql | docker exec -i congraduationdb psql -U postgres -d postgres
+#misc
+ig you want to see the database and its data whilst the docker container is running, in anpother terminal tab
 
-
-to view database in your terminal you can use these steps
-
+```
 docker exec -it congraduation-postgres bash 
 
 psql -U postgres
 
 \c congraduation;
 
+```
+these commands will take you do the database 
+
+```
 \dt;
+```
+to view all the table in the database.
 
 
 
- if you get permission error, use this line 
+starting venv isnt working its probably a system permissoin issue you can use
+```
  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-
-activate agaion  venv\Scripts\Activate
-
-
-install requirements
-pip install -r requirements.txt
-
-
-uvicorn backend.app.main:app --host localhost --port 8000
-
-
-once you have a version of node, use this specific version 
-
-npm install -g node@10.3.0
- 
-npm install
-
-npm start dev
+```
+to bypass that. 
