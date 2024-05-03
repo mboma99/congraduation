@@ -1,3 +1,4 @@
+
 ## Photo Graduation Web App
 
 This application is a photo graduation web app that uses a variety of technologies including S3, PostgreSQL, FastAPI, React.js, and Docker. 
@@ -14,9 +15,16 @@ This will be a step by step guide in how to run this application
 
 ## Installation on Windows
 
-1. **Install Docker:** Download Docker Desktop for Windows from the Docker Hub. Follow the installation guide provided.
+
+1. **Install Python:** Download python 3.9.6 from https://www.python.org/downloads/ download the correct system type. ensure that you add pyhton 3.9 to PATH. this video helps install to loacl enviroments https://youtu.be/91SGaK7_eeY?si=ueN80MXfl1cMPV6j. 
+
+2. **Install Docker:** Download Docker Desktop for Windows from the Docker Hub [https://docs.docker.com/desktop/install/windows-install/]. Follow the installation guide provided by the platform.
   
-2. **Install Node.js and npm:** Download Node.js and npm from the official website. Follow the installation guide provided.
+3. **Install Node.js and npm:** Download Node.js and npm from the official website [https://nodejs.org/en/download]. Follow the installation guide provided.
+
+4. **IDE Selection** Select IDE, recommend to you install vscode [https://code.visualstudio.com/download], but IDE of choice is also welcomed.  
+
+5. 
   
 3. **Install PostgreSQL:** Download PostgreSQL from the official website. Follow the installation guide provided.
   
