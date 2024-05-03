@@ -33,14 +33,18 @@ it should be like this `wkdir\congraduation`.
    ```
    python -m venv venv
    ```
+   
 
 3. Activate the virtual enviroment
    ```
    venv\Scripts\Activate
    ```
 
-4. Install backend requirements
-  
+4. Install backend requirements  
+  ```
+  pip install -r requirements.txt
+  ```
+
 5. some times the install wont work depending on your deivice, commobn trtouble shooting method is
   ```
   pip install --force-reinstall -r requirements.txt   
