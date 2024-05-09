@@ -96,10 +96,15 @@ export function CartProvider({children}) {
         let totalCost = 0;
         cartProducts.map((cartItem) => {
             const productData = getProductData(cartItem.id);
+            if (!productData) {
+                console.log(`Product data not found for product ID: ${cartItem.id}`);
+                return;
+            }
             totalCost += (productData.price * cartItem.quantity);
         });
         return totalCost;
     }
+    
 
     const contextValue = {
         items: cartProducts,

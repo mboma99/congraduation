@@ -10,6 +10,11 @@ function CartProduct({ product }) {
     const quantity = product.quantity;
     const productData = getProductData(product.id);
 
+    // Check if productData is undefined before accessing its properties
+    if (!productData) {
+        return <div>Error: Product data not found</div>; // Placeholder or error message
+    }
+
     return (
         <>
         <hr />
@@ -43,4 +48,5 @@ function CartProduct({ product }) {
         <hr />
         </>
     );
-} export default CartProduct;
+} 
+export default CartProduct;

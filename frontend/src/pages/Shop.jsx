@@ -6,7 +6,6 @@ import { useParams, Link } from 'react-router-dom';
 import { CartContext } from '../CartContext';
 import SadCat from '../components/assets/sad_cat.jpeg';
 
-
 export const Shop = () => {
   const { search_key } = useParams();
   const [portfolio, setPortfolio] = useState(null);
@@ -15,6 +14,7 @@ export const Shop = () => {
   const cart = useContext(CartContext);
   const [noPhotosFound, setNoPhotosFound] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [loading, setLoading] = useState(true); // Loading state
 
   const searchType = () => {
     if (search_key && search_key.includes('@')) {
@@ -43,7 +43,8 @@ export const Shop = () => {
       })
       .catch((error) => {
         //console.error('Error fetching photos by email:', error);
-      });
+      })
+      .finally(() => setLoading(false)); // Set loading to false after fetching
   };
 
   const searchByUUID = (portfolio_id) => {
@@ -63,7 +64,8 @@ export const Shop = () => {
       })
       .catch((error) => {
         //console.error('Error fetching photos by UUID:', error);
-      });
+      })
+      .finally(() => setLoading(false)); // Set loading to false after fetching
   };
 
   useEffect(() => {
@@ -78,7 +80,13 @@ export const Shop = () => {
       });
       setProductQuantities(quantities);
     } else {
-      setNoPhotosFound(true);
+      // Set a delay before showing "No Photos Found" message
+      const delayTimeout = setTimeout(() => {
+        setNoPhotosFound(true);
+      }, 3000); // 3000 milliseconds = 3 seconds
+
+      // Clear the timeout if photos are loaded before the delay ends
+      return () => clearTimeout(delayTimeout);
     }
   }, [allPhotos, cart]);
 
@@ -87,7 +95,9 @@ export const Shop = () => {
       {portfolio && (
         <h1 className='self-start uppercase font-light text-xl text-white tracking-[.1em] mb-3'>check out <span className='font-bold'>{portfolio.customer_first_name}'s </span> graduation photos</h1>
       )}
-      {allPhotos.length > 0 ? (
+      {loading ? (
+        <div>Loading...</div>
+      ) : allPhotos.length > 0 ? (
         <>
           <hr className="my-2 border-t-1 border-b-1 border-white w-full mb-2" />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
@@ -135,7 +145,6 @@ export const Shop = () => {
           <p className=' text-9xl font-bold tracking-[.2em] '>404</p>
           <p className="text-white text-2xl text-center">Oh no! We couldn't <br />find any photos for {search_key}</p>
           <Link to="/" ><button type="submit" className="mt-4 mb-10 w-48 border h-16 py-3 px-4 uppercase font-normal bg-transparent transition duration-300 hover:bg-customDullBlue text-white rounded-full">go home</button></Link>
-
         </div>
       )}
       {selectedPhoto && (
