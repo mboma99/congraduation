@@ -6,10 +6,6 @@ Sure, here it is with the actual `##`:
 This application is a photo graduation web app that uses a variety of technologies including S3, PostgreSQL, FastAPI, React.js, and Docker.
 
 ## Software Requirements
-
-- **S3:** This is an Amazon Simple Storage Service used for storing images. You need an AWS account to use this service.
-  
-- **PostgreSQL:** This is a powerful, open-source object-relational database system. It is used to store links to where images are stored in S3.
   
 - **FastAPI:** This is a modern, fast (high-performance), web framework for building APIs with Python 3.6+ based on standard Python type hints.
   
@@ -19,15 +15,13 @@ This application is a photo graduation web app that uses a variety of technologi
 
 ## Installation on Windows
 
-1. **Install Docker:** Download Docker Desktop for Windows from the Docker Hub. Follow the installation guide provided.
+1. **Install Python:** Download python 3.9.6 from https://www.python.org/downloads/ download the correct system type. ensure that you add pyhton 3.9 to PATH. this video helps install to loacl enviroments https://youtu.be/91SGaK7_eeY?si=ueN80MXfl1cMPV6j. 
+
+2. **Install Docker:** Download Docker Desktop for Windows from the Docker Hub [https://docs.docker.com/desktop/install/windows-install/]. Follow the installation guide provided by the platform.
   
-2. **Install Node.js and npm:** Download Node.js and npm from the official website. Follow the installation guide provided.
+3. **Install Node.js and npm:** Download Node.js and npm from the official website [https://nodejs.org/en/download]. Follow the installation guide provided.
   
-3. **Install PostgreSQL:** Download PostgreSQL from the official website. Follow the installation guide provided.
-  
-4. **Set up AWS S3:** Create an AWS account if you don't have one. Follow the guide on the official AWS documentation to set up an S3 bucket.
-  
-5. **Clone the repository:** Clone the photo graduation web app repository to your local machine.
+4. **Clone the repository:** Clone the photo graduation web app repository to your local machine.
   
 6. **Install dependencies:** Navigate to the project directory and install the necessary dependencies. For the backend, you might need to create a virtual environment and install the dependencies listed in the requirements.txt file. For the frontend, navigate to the frontend directory and run npm install.
   

@@ -67,6 +67,16 @@ class RegisterPhotographerSchema(BaseModel):
             raise HTTPException(status_code=400, detail="Invalid input phone number!")
         return v
 
+    @validator("password")
+    def password_validation(cls, v):
+        logger.debug(f"password in 2 validator: {v}")
+
+        # regex password with the specified format
+        regex = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
+        if v and not re.search(regex, v, re.I):
+            raise HTTPException(status_code=400, detail="Invalid input password!")
+        return v
+    
 class CreatePortfolioSchema(BaseModel):
     customer_first_name: str = Field(None, example="John")
     customer_last_name: str = Field(None, example="Doe")
@@ -83,6 +93,26 @@ class LoginSchema(BaseModel):
 class ForgotPasswordSchema(BaseModel):
     email: str = Field(None, example="john.doe@example.com")
     new_password: str = Field(None, example="password")
+    
+    @validator("new_password")
+    def password_validation(cls, v):
+        # regex password with the specified format
+        regex = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
+        if v:
+            if not re.search(regex, v, re.I):
+                requirements = ""
+                if not re.search(r"[a-z]", v):
+                    requirements += "at least one lowercase letter, "
+                if not re.search(r"[A-Z]", v):
+                    requirements += "at least one uppercase letter, "
+                if not re.search(r"\d", v):
+                    requirements += "at least one digit, "
+                if len(v) < 8:
+                    requirements += "minimum length of 8 characters, "
+            HTTPException(status_code=400, detail=f"{requirements}")
+        return v
+    
+    
 
 class ForgotPasswordPhotographerSchema(BaseModel):
     email: str = Field(None, example="john.doe@admin.com")
