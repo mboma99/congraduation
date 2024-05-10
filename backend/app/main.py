@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
-from backend.app.config import db
+from app.config import db
 
 
 origins= [
@@ -33,8 +33,8 @@ def init_app():
     async def shutdown():
         await db.close()
 
-    from backend.app.controller import authentication, customers, photographer, portfolio, photo
-    from backend.app.util import stripe
+    from app.controller import authentication, customers, photographer, portfolio, photo
+    from app.util import stripe
     temp_app.include_router(authentication.router)
     temp_app.include_router(customers.router)
     temp_app.include_router(photographer.router)

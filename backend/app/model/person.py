@@ -4,7 +4,7 @@ from pydantic import BaseModel, validator
 from typing import Optional
 from datetime import date
 from sqlmodel import SQLModel, Field, Relationship
-from backend.app.model.mixins import TimeMixin
+from app.model.mixins import TimeMixin
 
 class Person(SQLModel, TimeMixin, table=True):
     __tablename__ = "tbl_person"

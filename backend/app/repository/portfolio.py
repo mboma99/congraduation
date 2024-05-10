@@ -1,9 +1,9 @@
 from sqlalchemy import update as sql_update
 from sqlalchemy.future import select
 
-from backend.app.config import db, commit_rollback
-from backend.app.model.portfolio import Portfolio
-from backend.app.repository.base_repo import BaseRepo
+from app.config import db, commit_rollback
+from app.model.portfolio import Portfolio
+from app.repository.base_repo import BaseRepo
 
 class PortfolioRepository(BaseRepo):
     model = Portfolio

@@ -1,32 +1,22 @@
-version: '3.8'
 
 services:
-  # FastAPI Application Service
-  fastapi-app:
+  backend:
+    build: 
+      context: ./backend          # Path to the directory containing your backend Dockerfile
+    ports:
+      - "8000:8000"       # Expose the backend container port
+    environment:
+      - AWS_DEFAULT_REGION=eu-west-2
+      - AWS_ACCESS_KEY_ID=AKIA4QYJOJFOSEIEJBR4
+      - AWS_SECRET_ACCESS_KEY=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
+      - S3_BUCKET_NAME=congraduation-dev
+      - STRIPE_SECRET_KEY=sk_test_51HLUDEAxTn6e6ofy3Zughj3jI8TDdF1IO4dslGA1yEGXc0PDHEOpmIfNiJbDfVJnRi5aXEEVcZf0fWyrTXfbNISB00Uz7MF7Vn
+      # Add any other environment variables needed by your backend
+
+  frontend:
     build:
-      context: .
-      dockerfile: ./backend/Dockerfile  # Path to FastAPI Dockerfile
+      context: ./frontend         # Path to the directory containing your frontend Dockerfile
     ports:
-      - "8000:8000"
-    depends_on:
-      - postgres-db
+      - "3000:3000"               # Expose the frontend container port
     environment:
-      DATABASE_URL: "postgresql+asyncpg://james:P2521444@postgres-db:5432/congraduation"  # Use the service name as the host
-
-  # PostgreSQL Database Service
-  postgres-db:
-    image: postgres:16.1-alpine
-    container_name: database
-    restart: always
-    user: postgres
-    environment:
-      POSTGRES_DB: congraduation
-      POSTGRES_PASSWORD: P2521444
-    ports:
-      - "5432:5432"
-    volumes:
-      - ~/apps/postgres:/var/lib/postgresql/data
-
-networks:
-  default:
-    driver: bridge
+      - REACT_APP_API_URL=http://localhost:8000  # Set the backend URL for frontend

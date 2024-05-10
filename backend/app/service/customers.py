@@ -2,12 +2,12 @@ from typing import List
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.future import select
-from backend.app.model import Customers, Person, Universities
-from backend.app.config import db
-from backend.app.repository.university import UniversityRepository
-from backend.app.service.schema import CustomerProfileResponse, PersonProfileUpdate
-from backend.app.repository.customer import CustomerRepository
-from backend.app.repository.person import PersonRepository
+from app.model import Customers, Person, Universities
+from app.config import db
+from app.repository.university import UniversityRepository
+from app.service.schema import CustomerProfileResponse, PersonProfileUpdate
+from app.repository.customer import CustomerRepository
+from app.repository.person import PersonRepository
 
 class CustomerService:
 

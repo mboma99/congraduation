@@ -2,7 +2,7 @@ from typing import List, Optional
 from sqlalchemy import Column, String, Integer
 from datetime import datetime
 from sqlmodel import SQLModel, Field, Relationship
-from backend.app.model.mixins import TimeMixin
+from app.model.mixins import TimeMixin
 
 class Portfolio(SQLModel, table=True):
     __tablename__ = "tbl_portfolio"

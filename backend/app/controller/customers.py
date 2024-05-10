@@ -1,10 +1,10 @@
 from typing import List
 from fastapi import APIRouter, Depends, Security
 from fastapi import HTTPException
-from backend.app.service.schema import CustomerProfileResponse, ResponseSchema, PersonProfileUpdate,CustomerProfileUpdate
-from backend.app.repository.auth_repo import JWTBearer, JWTRepo
+from app.service.schema import CustomerProfileResponse, ResponseSchema, PersonProfileUpdate,CustomerProfileUpdate
+from app.repository.auth_repo import JWTBearer, JWTRepo
 from fastapi.security import HTTPAuthorizationCredentials
-from backend.app.service.customers import CustomerService
+from app.service.customers import CustomerService
 
 router = APIRouter(
     prefix="/customer",

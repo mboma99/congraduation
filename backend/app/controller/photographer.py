@@ -1,11 +1,11 @@
 from typing import List
 from fastapi import APIRouter, Depends, Security
 from fastapi import HTTPException
-from backend.app.service.customers import CustomerService
-from backend.app.service.schema import CustomerProfileResponse, ResponseSchema,PhotographerUpdateSchema, PersonProfileUpdate
-from backend.app.repository.auth_repo import JWTBearer, JWTRepo
+from app.service.customers import CustomerService
+from app.service.schema import CustomerProfileResponse, ResponseSchema,PhotographerUpdateSchema, PersonProfileUpdate
+from app.repository.auth_repo import JWTBearer, JWTRepo
 from fastapi.security import HTTPAuthorizationCredentials
-from backend.app.service.photographer import PhotographerService
+from app.service.photographer import PhotographerService
 
 router = APIRouter(
     prefix="/photographer",

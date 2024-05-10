@@ -1,7 +1,7 @@
 from typing import Optional, List
 from sqlalchemy import Column, String, Float
 from sqlmodel import SQLModel, Field, Relationship
-from backend.app.model.mixins import TimeMixin
+from app.model.mixins import TimeMixin
 
 class ProductType(SQLModel, table=True):
     __tablename__ = "tbl_product_type"

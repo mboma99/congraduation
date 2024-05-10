@@ -1,11 +1,11 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.future import select
-from backend.app.model import Photographer, Person,Portfolio
-from backend.app.config import db
-from backend.app.repository.photographer import PhotographerRepository
-from backend.app.repository.person import PersonRepository
-from backend.app.service.schema import PhotographerProfileResponse, PhotographerUpdateSchema,PersonProfileUpdate
+from app.model import Photographer, Person,Portfolio
+from app.config import db
+from app.repository.photographer import PhotographerRepository
+from app.repository.person import PersonRepository
+from app.service.schema import PhotographerProfileResponse, PhotographerUpdateSchema,PersonProfileUpdate
 
 class PhotographerService:
     @staticmethod

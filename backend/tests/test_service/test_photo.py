@@ -1,14 +1,14 @@
 from fastapi import HTTPException
 import pytest
 from unittest.mock import MagicMock, AsyncMock
-from backend.app.model.photo import Photo
-from backend.app.repository.photo import PhotoRepository
-from backend.app.repository.portfolio import PortfolioRepository
-from backend.app.repository.photo import PhotoRepository
-from backend.app.repository.product_type import ProductTypeRepository
+from app.model.photo import Photo
+from app.repository.photo import PhotoRepository
+from app.repository.portfolio import PortfolioRepository
+from app.repository.photo import PhotoRepository
+from app.repository.product_type import ProductTypeRepository
 from botocore.exceptions import BotoCoreError
-from backend.app.service.photo import PhotoService
-from backend.app.service.schema import PhotoResponse
+from app.service.photo import PhotoService
+from app.service.schema import PhotoResponse
 from moto import mock_aws
 
 @pytest.fixture

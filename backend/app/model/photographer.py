@@ -1,7 +1,7 @@
 from typing import List, Optional
 from sqlalchemy import Column, String
 from sqlmodel import SQLModel, Field, Relationship
-from backend.app.model.mixins import TimeMixin
+from app.model.mixins import TimeMixin
 
 class Photographer(SQLModel, table=True):
     __tablename__ = "tbl_photographer"

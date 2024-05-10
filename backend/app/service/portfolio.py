@@ -2,12 +2,12 @@ from uuid import uuid4
 from sqlalchemy.orm import Session
 import datetime, boto3,os
 from sqlalchemy.future import select
-from backend.app.model import Portfolio, Photo
-from backend.app.config import db
-from backend.app.service.schema import PortfolioResponse, PortfolioRegisterSchema, PhotoResponse
-from backend.app.repository.portfolio import PortfolioRepository
-from backend.app.repository.photographer import PhotographerRepository
-from backend.app.repository.photo import PhotoRepository
+from app.model import Portfolio, Photo
+from app.config import db
+from app.service.schema import PortfolioResponse, PortfolioRegisterSchema, PhotoResponse
+from app.repository.portfolio import PortfolioRepository
+from app.repository.photographer import PhotographerRepository
+from app.repository.photo import PhotoRepository
 from fastapi import HTTPException
 from botocore.exceptions import ClientError
 from dotenv import load_dotenv

@@ -1,14 +1,14 @@
 
 import pytest
 from unittest.mock import MagicMock, AsyncMock
-from backend.app.service.portfolio import PortfolioService
-from backend.app.repository.portfolio import PortfolioRepository
-from backend.app.repository.photographer import PhotographerRepository
-from backend.app.service.schema import PortfolioRegisterSchema
+from app.service.portfolio import PortfolioService
+from app.repository.portfolio import PortfolioRepository
+from app.repository.photographer import PhotographerRepository
+from app.service.schema import PortfolioRegisterSchema
 from fastapi import HTTPException
 from botocore.exceptions import ClientError
 from sqlalchemy.future import select
-from backend.app.model import Portfolio, Photo
+from app.model import Portfolio, Photo
 import datetime
 import os
 import boto3

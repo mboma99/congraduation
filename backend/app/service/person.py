@@ -1,8 +1,8 @@
 
 from sqlalchemy.future import select
-from backend.app.model import Customers, Person
-from backend.app.config import db
-from backend.app.service.schema import CustomerProfileResponse
+from app.model import Customers, Person
+from app.config import db
+from app.service.schema import CustomerProfileResponse
 
 class PersonService:
 

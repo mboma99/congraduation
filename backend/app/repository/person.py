@@ -1,11 +1,11 @@
-from backend.app.model.person import Person
-from backend.app.model.customer import Customers
-from backend.app.repository.base_repo import BaseRepo
+from app.model.person import Person
+from app.model.customer import Customers
+from app.repository.base_repo import BaseRepo
 
 from sqlalchemy import update as sql_update
 from sqlalchemy.future import select
 
-from backend.app.config import db, commit_rollback
+from app.config import db, commit_rollback
 
 class PersonRepository(BaseRepo):
     model = Person

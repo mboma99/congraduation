@@ -1,7 +1,7 @@
 from typing import Optional
 from sqlalchemy import Column, String
 from sqlmodel import SQLModel, Field, Relationship
-from backend.app.model.mixins import TimeMixin
+from app.model.mixins import TimeMixin
 from .product_type import ProductType
 
 class Photo(SQLModel, table=True):

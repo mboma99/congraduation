@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, Security, HTTPException, UploadFile
-from backend.app.service.schema import ResponseSchema,PortfolioResponse,PortfolioUpdateResponse, CreatePortfolioSchema
-from backend.app.repository.auth_repo import JWTBearer, JWTRepo
+from app.service.schema import ResponseSchema,PortfolioResponse,PortfolioUpdateResponse, CreatePortfolioSchema
+from app.repository.auth_repo import JWTBearer, JWTRepo
 from fastapi.security import HTTPAuthorizationCredentials
-from backend.app.service.portfolio import PortfolioService
-from backend.app.service.photo import PhotoService
+from app.service.portfolio import PortfolioService
+from app.service.photo import PhotoService
 from fastapi.responses import JSONResponse
 import boto3 
 import os

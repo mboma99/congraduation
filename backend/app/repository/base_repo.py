@@ -1,7 +1,7 @@
 from typing import Generic, TypeVar
 from sqlalchemy import update as sql_update, delete as sql_delete
 from sqlalchemy.future import select
-from backend.app.config import db, commit_rollback
+from app.config import db, commit_rollback
 
 T = TypeVar('T')
 

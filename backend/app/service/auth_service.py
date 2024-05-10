@@ -2,14 +2,14 @@
 from uuid import uuid4
 from fastapi import HTTPException
 from passlib.context import CryptContext
-from backend.app.model import Person, Customers, Photographer
-from backend.app.repository.access import AccessRepository
-from backend.app.repository.customer import CustomerRepository
-from backend.app.repository.university import UniversityRepository
-from backend.app.repository.person import PersonRepository
-from backend.app.repository.photographer import PhotographerRepository
-from backend.app.service.schema import CustomerDeleteSchema, ForgotPasswordPhotographerSchema, LoginSchema, ForgotPasswordSchema, PhotographerDeleteSchema, RegisterSchema, RefreshTokenSchema
-from backend.app.repository.auth_repo import JWTRepo
+from app.model import Person, Customers, Photographer
+from app.repository.access import AccessRepository
+from app.repository.customer import CustomerRepository
+from app.repository.university import UniversityRepository
+from app.repository.person import PersonRepository
+from app.repository.photographer import PhotographerRepository
+from app.service.schema import CustomerDeleteSchema, ForgotPasswordPhotographerSchema, LoginSchema, ForgotPasswordSchema, PhotographerDeleteSchema, RegisterSchema, RefreshTokenSchema
+from app.repository.auth_repo import JWTRepo
 
 
 # Encrypt password

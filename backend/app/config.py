@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel
 
-DB_CONFIG = f"postgresql://postgres:bSYZqkGfjFZHGjHxCZVWXjOYjNgSyxQE@postgres.railway.internal:5432/railway"
+DB_CONFIG = f"postgresql://postgres:bSYZqkGfjFZHGjHxCZVWXjOYjNgSyxQE@monorail.proxy.rlwy.net:53841/railway"
 
 #encryption key 
 SECRET_KEY = "P2521444"

@@ -1,12 +1,12 @@
 from fastapi import HTTPException
 import pytest
 from unittest.mock import AsyncMock, MagicMock
-from backend.app.config import db
-from backend.app.model.customer import Customers
-from backend.app.repository.person import PersonRepository
-from backend.app.repository.customer import CustomerRepository
-from backend.app.service.customers import CustomerService
-from backend.app.service.schema import PhotographerUpdateSchema
+from app.config import db
+from app.model.customer import Customers
+from app.repository.person import PersonRepository
+from app.repository.customer import CustomerRepository
+from app.service.customers import CustomerService
+from app.service.schema import PhotographerUpdateSchema
 
 
 @pytest.fixture

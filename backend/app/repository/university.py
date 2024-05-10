@@ -1,7 +1,7 @@
-from backend.app.repository.base_repo import BaseRepo
-from backend.app.model.university import Universities
+from app.repository.base_repo import BaseRepo
+from app.model.university import Universities
 from sqlalchemy.future import select
-from backend.app.config import db
+from app.config import db
 
 class UniversityRepository(BaseRepo):
     model = Universities

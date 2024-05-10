@@ -3,12 +3,12 @@ from uuid import uuid4
 import datetime
 from fastapi import HTTPException, UploadFile
 from sqlalchemy.future import select
-from backend.app.model import Photo, Portfolio
-from backend.app.config import db
-from backend.app.service.schema import PhotoSchema, PhotoResponse, PhotosResponse
-from backend.app.repository.photo import PhotoRepository
-from backend.app.repository.portfolio import PortfolioRepository
-from backend.app.repository.product_type import ProductTypeRepository
+from app.model import Photo, Portfolio
+from app.config import db
+from app.service.schema import PhotoSchema, PhotoResponse, PhotosResponse
+from app.repository.photo import PhotoRepository
+from app.repository.portfolio import PortfolioRepository
+from app.repository.product_type import ProductTypeRepository
 from sqlalchemy import delete
 from botocore.exceptions import ClientError
 import boto3 
