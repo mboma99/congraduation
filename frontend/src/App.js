@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Footer from './components/navigation/Footer';
 import Background from './components/backgrounds/Background';
 import BackgroundActions from './components/backgrounds/BackgroundActions';
-
+import axios from 'axios';
 import Navbar from './components/navigation/Navbar';
 import FocusedNavbar from './components/navigation/FocusedNavbar';
 import Home from './pages/Home';
@@ -41,6 +41,11 @@ function App() {
     setToken(auth);
   }, []);
 
+  
+
+// Set the base URL for axios requests
+  axios.defaults.baseURL = 'https://congraduation-fastapi-backend-production-4309.up.railway.app'; 
+  
   return (
     <BrowserRouter>
     <CartProvider>

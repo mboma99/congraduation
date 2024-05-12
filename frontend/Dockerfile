@@ -14,5 +14,8 @@ COPY . .
 # Build the React app
 RUN npm run build
 
+# Set Node.js memory options
+ENV NODE_OPTIONS="--max_old_space_size=4096"
+
 # Command to run the application
 CMD ["npm", "start"]
