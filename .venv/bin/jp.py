@@ -1,4 +1,4 @@
-#!/Users/jamesmboma/GitProjects/congraduation/.venv/bin/python3
+#!/Users/jamesmboma/GitProjects/congraduation/.venv/bin/python
 
 import sys
 import json

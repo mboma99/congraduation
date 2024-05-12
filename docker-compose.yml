@@ -1,22 +1,12 @@
-
 services:
   backend:
     build: 
       context: ./backend          # Path to the directory containing your backend Dockerfile
     ports:
-      - "8000:8000"       # Expose the backend container port
-    environment:
-      - AWS_DEFAULT_REGION=eu-west-2
-      - AWS_ACCESS_KEY_ID=AKIA4QYJOJFOSEIEJBR4
-      - AWS_SECRET_ACCESS_KEY=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
-      - S3_BUCKET_NAME=congraduation-dev
-      - STRIPE_SECRET_KEY=sk_test_51HLUDEAxTn6e6ofy3Zughj3jI8TDdF1IO4dslGA1yEGXc0PDHEOpmIfNiJbDfVJnRi5aXEEVcZf0fWyrTXfbNISB00Uz7MF7Vn
-      # Add any other environment variables needed by your backend
+      - "${BACKEND_PORT:-8000}:8000"   # Expose the backend container port, defaulting to 8000 if BACKEND_PORT is not set
 
   frontend:
     build:
       context: ./frontend         # Path to the directory containing your frontend Dockerfile
     ports:
-      - "3000:3000"               # Expose the frontend container port
-    environment:
-      - REACT_APP_API_URL=http://localhost:8000  # Set the backend URL for frontend
+      - "${FRONTEND_PORT:-3000}:3000"   # Expose the frontend container port, defaulting to 3000 if FRONTEND_PORT is not set

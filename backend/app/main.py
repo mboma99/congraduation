@@ -2,10 +2,11 @@ import uvicorn
 from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import db
+import os
 
 
 origins= [
-    "http://localhost:3000"
+    os.getenv("FRONTEND_URL")
 ]
 
 def init_app():
@@ -44,9 +45,6 @@ def init_app():
     return temp_app
 
 app = init_app()
-def start():
-    uvicorn.run("backend.app.main:app", host ="localhost", port=8000, reload=True)
-
 
 if __name__ == "__main__":
-    start()
+    pass
