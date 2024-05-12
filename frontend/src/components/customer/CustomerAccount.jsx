@@ -18,7 +18,7 @@ export const CustomerAccount = () => {
 
     //  fetch data from get user api
     axios
-      .get("http://localhost:8000/customer/", {
+      .get("/customer/", {
         headers: { Authorization: token },
       })
       .then((response) => {

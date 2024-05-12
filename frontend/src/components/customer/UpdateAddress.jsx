@@ -24,7 +24,7 @@ const UpdateAddress = ({ user, onClose }) => {
 
         if (Object.keys(customerProfileFields).length !== 0) {
             axios
-                .put("http://localhost:8000/customer/update_customer_profile", customerProfileFields, {
+                .put("/customer/update_customer_profile", customerProfileFields, {
                     headers: { Authorization: token },
                 })
                 .then((response) => {

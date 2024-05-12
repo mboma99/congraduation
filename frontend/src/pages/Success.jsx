@@ -15,7 +15,7 @@ function Success() {
           setProducts(parsedProducts);
 
           const photoObjectsPromises = parsedProducts.map(async (product) => {
-            const response = await axios.get(`http://localhost:8000/photo/specific_photo/${product.id}`);
+            const response = await axios.get(`/photo/specific_photo/${product.id}`);
             return response.data;
           });
 

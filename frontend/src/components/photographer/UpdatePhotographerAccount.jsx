@@ -32,7 +32,7 @@ const UpdateAccount = ({ user, onClose }) => {
 
         if (Object.keys(personalProfileFields).length !== 0) {
             axios
-                .put("http://localhost:8000/photographer/update_person_profile", personalProfileFields, {
+                .put("/photographer/update_person_profile", personalProfileFields, {
                     headers: { Authorization: token },
                 })
                 .then((response) => {
@@ -45,7 +45,7 @@ const UpdateAccount = ({ user, onClose }) => {
 
         if (Object.keys(customerProfileFields).length !== 0) {
             axios
-                .put("http://localhost:8000/photographer/update_photographer_profile", customerProfileFields, {
+                .put("/photographer/update_photographer_profile", customerProfileFields, {
                     headers: { Authorization: token },
                 })
                 .then((response) => {
@@ -58,7 +58,7 @@ const UpdateAccount = ({ user, onClose }) => {
                         };
                         //console.log('email payload:', emailUpdatePayload);
                         axios.post(
-                            "http://localhost:8000/auth/token_refresh",
+                            "/auth/token_refresh",
                             emailUpdatePayload
                         ).then((response) => {
                             //console.log('NEW TOKEN Response:', response);

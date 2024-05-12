@@ -27,7 +27,7 @@ export const Shop = () => {
   };
 
   const searchByEmail = (email) => {
-    axios.get(`http://localhost:8000/photo/photos_by_customer_email/${email}`)
+    axios.get(`/photo/photos_by_customer_email/${email}`)
       .then((response) => {
         setPortfolio(response.data);
         setAllPhotos(prevPhotos => {
@@ -48,7 +48,7 @@ export const Shop = () => {
   };
 
   const searchByUUID = (portfolio_id) => {
-    axios.get(`http://localhost:8000/photo/all_photos/${portfolio_id}`)
+    axios.get(`/photo/all_photos/${portfolio_id}`)
       .then((response) => {
         setPortfolio(response.data);
         setAllPhotos(prevPhotos => {

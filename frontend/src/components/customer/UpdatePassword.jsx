@@ -18,7 +18,7 @@ const UpdatePassword = ({ user, onClose }) => {
         };
 
         axios
-            .post("http://localhost:8000/auth/forgot-password", data)
+            .post("/auth/forgot-password", data)
             .then((response) => {
                 const token_refresh = {
                     access_token: token,
@@ -26,7 +26,7 @@ const UpdatePassword = ({ user, onClose }) => {
                     email: user.email,
                 };
                 axios.post(
-                    "http://localhost:8000/auth/token_refresh",
+                    "/auth/token_refresh",
                     token_refresh
                 ).then((response) => {
                     console.log('NEW TOKEN Response:', response);

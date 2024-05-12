@@ -45,7 +45,7 @@ export const RegisterFormAdmin = () => {
             return;
         }
         axios
-            .post("http://localhost:8000/auth/register_photographer", formData)
+            .post("/auth/register_photographer", formData)
             .then((response) => {
                 //console.log(response);
                 // redirect to login page

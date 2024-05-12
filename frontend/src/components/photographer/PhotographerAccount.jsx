@@ -21,7 +21,7 @@ export const PhotographerAccount = () => {
 
     // fetch data from get user api
     axios
-      .get("http://localhost:8000/photographer/", {
+      .get("/photographer/", {
         headers: { Authorization: token },
       })
       .then((response) => {

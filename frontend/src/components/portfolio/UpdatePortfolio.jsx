@@ -38,7 +38,7 @@ const UpdatePortfolio = ({ portfolio, onClose }) => {
             delete updatedPortfolio.photos;
             
             axios
-              .put(`http://localhost:8000/portfolio/update_portfolio/${portfolio_id}`, updatedPortfolio, {
+              .put(`/portfolio/update_portfolio/${portfolio_id}`, updatedPortfolio, {
                 headers: { Authorization: token },
               })
               .then((response) => {

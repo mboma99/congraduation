@@ -8,7 +8,7 @@ const NavigateAdmin = () => {
     const token = auth_token_type + ' ' + auth_token;
 
     axios
-      .get('http://localhost:8000/photographer/', {
+      .get('/photographer/', {
         headers: { Authorization: token },
       })
       .then((response) => {

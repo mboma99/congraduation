@@ -44,7 +44,7 @@ function App() {
   
 
 // Set the base URL for axios requests
-  axios.defaults.baseURL = 'https://congraduation-fastapi-backend-production-4309.up.railway.app'; 
+  axios.defaults.baseURL ='https://congraduation-fastapi-backend-production-4309.up.railway.app'; 
   
   return (
     <BrowserRouter>

@@ -40,7 +40,7 @@ const ManagePortfolio = () => {
         setShowSpinner(true);
         const formData = new FormData();
         formData.append('file', selectedFile);
-        axios.post(`http://localhost:8000/portfolio/${portfolio_id}/upload_photo`, formData, {
+        axios.post(`/portfolio/${portfolio_id}/upload_photo`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 Authorization: token,
@@ -59,7 +59,7 @@ const ManagePortfolio = () => {
     }
 
     const deletePhoto = (photoId) => {
-        axios.delete(`http://localhost:8000/portfolio/${portfolio_id}/delete_photo/${photoId}`, {
+        axios.delete(`/portfolio/${portfolio_id}/delete_photo/${photoId}`, {
             headers: {
                 Authorization: token,
             },
@@ -75,7 +75,7 @@ const ManagePortfolio = () => {
 
     useEffect(() => {
         axios
-            .get(`http://localhost:8000/portfolio/specific_portfolio/${portfolio_id}`, {
+            .get(`/portfolio/specific_portfolio/${portfolio_id}`, {
                 headers: { Authorization: token },
             })
             .then((response) => {

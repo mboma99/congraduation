@@ -42,7 +42,7 @@ const getUniversityName = (id) => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/portfolio/all_portfolios/${photographer_id}`, {
+      .get(`/portfolio/all_portfolios/${photographer_id}`, {
         headers: { Authorization: token },
         photographer_id: photographer_id
       })
@@ -73,7 +73,7 @@ const getUniversityName = (id) => {
       }
       
       axios
-        .put(`http://localhost:8000/portfolio/update_portfolio/${editId}`, updatedPortfolio, {
+        .put(`/portfolio/update_portfolio/${editId}`, updatedPortfolio, {
           headers: { Authorization: token },
         })
         .then((response) => {
@@ -92,7 +92,7 @@ const getUniversityName = (id) => {
   const handleDelete = (id) => {
     const isConfirmed = window.confirm("Are you sure you want to delete this portfolio?");
     if (isConfirmed) {
-      axios.delete(`http://localhost:8000/portfolio/delete_portfolio/${id}`, {
+      axios.delete(`/portfolio/delete_portfolio/${id}`, {
         headers: { Authorization: token },
       })
         .then((response) => {

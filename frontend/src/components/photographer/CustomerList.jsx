@@ -46,7 +46,7 @@ const CustomerList = ({ photographer_id }) => {
 
     useEffect(() => {
         axios
-            .get(`http://localhost:8000/customer/all_customers`, {
+            .get(`/customer/all_customers`, {
                 headers: { Authorization: token }
             })
             .then((response) => {
@@ -65,7 +65,7 @@ const CustomerList = ({ photographer_id }) => {
     const handleUpdate = ({ id, updatedCustomer }) => {
 
         // Find the customer to update
-        const customer = axios.get(`http://localhost:8000/customer/${id}`, {
+        const customer = axios.get(`/customer/${id}`, {
             headers: { Authorization: token },
         }).then((response) => {
             return response.data.result;
@@ -90,7 +90,7 @@ const CustomerList = ({ photographer_id }) => {
 
         if (Object.keys(personalProfileFields).length !== 0) {
             axios
-                .put(`http://localhost:8000/customer/update_profile/${id}`, personalProfileFields, {
+                .put(`/customer/update_profile/${id}`, personalProfileFields, {
                     headers: { Authorization: token },
                 })
                 .then((response) => {
@@ -105,7 +105,7 @@ const CustomerList = ({ photographer_id }) => {
 
         if (Object.keys(customerProfileFields).length !== 0) {
             axios
-                .put(`http://localhost:8000/customer/update_customer/${id}`, customerProfileFields, {
+                .put(`/customer/update_customer/${id}`, customerProfileFields, {
                     headers: { Authorization: token },
                 })
                 .then((response) => {
@@ -127,7 +127,7 @@ const CustomerList = ({ photographer_id }) => {
         console.log(email, accessCode);
         if (isConfirmed) {
             console.log(email, accessCode);
-            axios.delete(`http://localhost:8000/auth/delete/customer/`, {
+            axios.delete(`/auth/delete/customer/`, {
                 data: { email, access_id: accessCode },
                 headers: { Authorization: token },
             })

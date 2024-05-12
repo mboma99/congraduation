@@ -18,7 +18,7 @@ const CreatePortfolio = ({ photographer_id, onClose }) => {
     e.preventDefault();
     try {
       console.log(portfolioData);
-      await axios.post(`http://localhost:8000/portfolio/create_portfolio/${photographer_id}`, portfolioData, {
+      await axios.post(`/portfolio/create_portfolio/${photographer_id}`, portfolioData, {
         headers: { Authorization: token }
       });
       onClose();

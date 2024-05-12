@@ -72,7 +72,7 @@ export const LoginAdmin = () => {
     // Call API for login
     try {
       const response = await axios.post(
-        'http://localhost:8000/auth/login_photographer',
+        'auth/login_photographer',
         loginForm
       );
       console.log(response);
@@ -94,7 +94,7 @@ export const LoginAdmin = () => {
         console.log("Token expired, local storage cleared.");
       }, tokenExpirationTime);
       axios
-        .get('http://localhost:8000/photographer/', {
+        .get('/photographer/', {
           headers: { Authorization: token },
         })
         .then((response) => {

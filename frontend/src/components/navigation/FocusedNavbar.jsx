@@ -42,7 +42,7 @@ export const Navbar = () => {
 
     if (userType === 'customer') {
       axios
-        .get("http://localhost:8000/customer/", {
+        .get("/customer/", {
           headers: { Authorization: token },
         })
         .then((response) => {
@@ -62,7 +62,7 @@ export const Navbar = () => {
 
     } else if (userType === 'photographer') {
       axios
-        .get('http://localhost:8000/photographer/', {
+        .get('/photographer/', {
           headers: { Authorization: token },
         })
         .then((response) => {
@@ -95,7 +95,7 @@ export const Navbar = () => {
     console.log(cart.items)
     try {
       const stripe = await stripePromise;
-      const response = await axios.post('http://localhost:8000/stripe/checkout/', {
+      const response = await axios.post('/stripe/checkout/', {
         items: cart.items
       });
 
